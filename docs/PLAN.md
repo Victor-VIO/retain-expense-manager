@@ -28,20 +28,20 @@ Budget status: **within** (< 80% used), **approaching** (80–100%), **over** (>
 ## Steps
 
 1. [x] Plan + checklist (this file)
-2. [ ] Backend setup: Express app, DB connection, schema, seed (admin + categories)
-3. [ ] Backend auth: register, login, me, JWT middleware, admin middleware
-4. [ ] Backend expenses: CRUD + search/filter/sort/pagination, owner checks
-5. [ ] Backend budgets, categories (admin CRUD), dashboard + admin insights
-6. [ ] Backend tested end-to-end with a script (incl. auth/ownership failures)
-7. [ ] Frontend setup: Vite TS, Bootstrap, router, shared types, API client
-8. [ ] AuthContext, login/register pages, protected + admin routes, navbar
-9. [ ] Redux store: filters slice + expenses thunk
-10. [ ] Expenses: list, filters bar, pagination, detail, create/edit form, delete
-11. [ ] Budget page + user dashboard
-12. [ ] Admin dashboard: category management + platform insights
-13. [ ] Connect backend to Turso, run schema + seed there
-14. [ ] Full manual test in the browser (desktop + mobile width)
-15. [ ] README: features, setup, tech, API reference, live URL placeholder
+2. [x] Backend setup: Express app, DB connection, schema, seed (admin + categories)
+3. [x] Backend auth: register, login, me, JWT middleware, admin middleware
+4. [x] Backend expenses: CRUD + search/filter/sort/pagination, owner checks
+5. [x] Backend budgets, categories (admin CRUD), dashboard + admin insights
+6. [x] Backend tested end-to-end with a script (incl. auth/ownership failures)
+7. [x] Frontend setup: Vite TS, Bootstrap, router, shared types, API client
+8. [x] AuthContext, login/register pages, protected + admin routes, navbar
+9. [x] Redux store: filters slice + expenses thunk
+10. [x] Expenses: list, filters bar, pagination, detail, create/edit form, delete
+11. [x] Budget page + user dashboard
+12. [x] Admin dashboard: category management + platform insights
+13. [ ] Connect backend to Turso, run schema + seed there (DB `retain` + token created; waiting on token in `backend/.env`)
+14. [x] Full manual test in the browser (desktop + mobile width)
+15. [x] README: features, setup, tech, API reference, live URL placeholder
 16. [ ] **STOP – deployment** (Render + Vercel, with Victor)
 
 ## Requirement checklist (cross-check before deploy)
