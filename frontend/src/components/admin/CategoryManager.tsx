@@ -5,6 +5,7 @@ import { getErrorMessage } from '../../api/client';
 import type { Category } from '../../types';
 import ConfirmModal from '../ConfirmModal';
 import { plural } from '../../utils/format';
+import { CategoryAvatar } from '../ui';
 
 interface Props {
   categories: Category[];
@@ -69,7 +70,8 @@ export default function CategoryManager({ categories, onChanged }: Props) {
   return (
     <Card className="h-100">
       <Card.Body>
-        <Card.Title className="h6 mb-3">Expense categories</Card.Title>
+        <h2 className="section-title">Expense categories</h2>
+        <p className="text-muted small mb-3">Add, rename or remove the categories people can choose from.</p>
         {message && (
           <Alert variant={message.type} dismissible onClose={() => setMessage(null)}>
             {message.text}
@@ -86,6 +88,7 @@ export default function CategoryManager({ categories, onChanged }: Props) {
               onChange={(e) => setNewName(e.target.value)}
             />
             <Button type="submit" disabled={busy || !newName.trim()}>
+              <i className="bi bi-plus-lg me-1" aria-hidden />
               Add
             </Button>
           </InputGroup>
@@ -93,7 +96,7 @@ export default function CategoryManager({ categories, onChanged }: Props) {
 
         <ListGroup variant="flush" className="category-list">
           {categories.map((c) => (
-            <ListGroup.Item key={c.id} className="px-0">
+            <ListGroup.Item key={c.id} className="px-0 bg-transparent">
               {editingId === c.id ? (
                 <Form onSubmit={handleRename}>
                   <InputGroup size="sm">
@@ -113,32 +116,43 @@ export default function CategoryManager({ categories, onChanged }: Props) {
                   </InputGroup>
                 </Form>
               ) : (
-                <div className="d-flex justify-content-between align-items-center gap-2">
-                  <span>
-                    {c.name}{' '}
-                    <span className="text-muted small">· {plural(c.expenseCount ?? 0, 'expense')}</span>
-                    {c.isDefault && (
-                      <Badge bg="secondary" className="ms-2">
-                        default
-                      </Badge>
-                    )}
-                  </span>
+                <div className="d-flex align-items-center gap-3">
+                  <CategoryAvatar name={c.name} size="sm" />
+                  <div className="flex-grow-1" style={{ minWidth: 0 }}>
+                    <div className="fw-semibold text-truncate">
+                      {c.name}
+                      {c.isDefault && (
+                        <Badge bg="secondary" className="ms-2 fw-semibold">
+                          default
+                        </Badge>
+                      )}
+                    </div>
+                    <div className="small text-muted">{plural(c.expenseCount ?? 0, 'expense')}</div>
+                  </div>
                   {!c.isDefault && (
-                    <span className="text-nowrap">
-                      <Button
-                        size="sm"
-                        variant="link"
+                    <div className="tx-actions">
+                      <button
+                        type="button"
+                        className="icon-btn"
+                        aria-label={`Rename ${c.name}`}
+                        title="Rename"
                         onClick={() => {
                           setEditingId(c.id);
                           setEditName(c.name);
                         }}
                       >
-                        Rename
-                      </Button>
-                      <Button size="sm" variant="link" className="text-danger" onClick={() => setToDelete(c)}>
-                        Delete
-                      </Button>
-                    </span>
+                        <i className="bi bi-pencil" aria-hidden />
+                      </button>
+                      <button
+                        type="button"
+                        className="icon-btn text-danger"
+                        aria-label={`Delete ${c.name}`}
+                        title="Delete"
+                        onClick={() => setToDelete(c)}
+                      >
+                        <i className="bi bi-trash3" aria-hidden />
+                      </button>
+                    </div>
                   )}
                 </div>
               )}

@@ -1,26 +1,36 @@
 import { useCallback } from 'react';
-import { Alert, Badge, Card, Col, Row, Table } from 'react-bootstrap';
+import { Alert, Badge, Card, Col, Row } from 'react-bootstrap';
 import { adminApi } from '../api';
 import CategoryManager from '../components/admin/CategoryManager';
 import CategoryBreakdown from '../components/CategoryBreakdown';
 import Loader from '../components/Loader';
-import StatCard from '../components/StatCard';
+import { CategoryAvatar, PageHeader, StatTile } from '../components/ui';
 import { useApi } from '../hooks/useApi';
 import { useCategories } from '../hooks/useCategories';
 import type { CategoryTotal } from '../types';
 import { formatDate, formatMoney, plural } from '../utils/format';
 
-function UsageList({ title, items }: { title: string; items: CategoryTotal[] }) {
+// Ranked list of categories by how often they're used.
+function UsageList({ title, subtitle, items }: { title: string; subtitle: string; items: CategoryTotal[] }) {
+  const max = Math.max(...items.map((c) => c.count), 1);
   return (
     <Card className="h-100">
       <Card.Body>
-        <Card.Title className="h6 mb-3">{title}</Card.Title>
-        <ol className="mb-0 ps-3">
-          {items.map((c) => (
-            <li key={c.categoryId} className="mb-1">
-              <div className="d-flex justify-content-between gap-2">
-                <span className="text-truncate">{c.name}</span>
-                <span className="text-muted small text-nowrap">{plural(c.count, 'use')}</span>
+        <h2 className="section-title">{title}</h2>
+        <p className="text-muted small mb-3">{subtitle}</p>
+        <ol className="list-unstyled mb-0 d-grid gap-3">
+          {items.map((c, i) => (
+            <li key={c.categoryId} className="d-flex align-items-center gap-3">
+              <span className="rank-badge">{i + 1}</span>
+              <CategoryAvatar name={c.name} size="sm" />
+              <div className="flex-grow-1" style={{ minWidth: 0 }}>
+                <div className="d-flex justify-content-between gap-2 small">
+                  <span className="fw-semibold text-truncate">{c.name}</span>
+                  <span className="text-muted text-nowrap">{plural(c.count, 'use')}</span>
+                </div>
+                <div className="legend-track">
+                  <span style={{ width: `${(c.count / max) * 100}%`, background: 'var(--brand)' }} />
+                </div>
               </div>
             </li>
           ))}
@@ -42,12 +52,7 @@ export default function AdminPage() {
 
   return (
     <>
-      <div className="page-header">
-        <div>
-          <h1 className="h3 mb-0">Admin dashboard</h1>
-          <p className="text-muted mb-0">Platform activity and category management.</p>
-        </div>
-      </div>
+      <PageHeader title="Admin dashboard" subtitle="Activity across all Retain users, and the expense categories everyone uses." />
 
       {error && <Alert variant="danger">{error}</Alert>}
       {loading && !data && <Loader text="Loading insights..." />}
@@ -56,39 +61,40 @@ export default function AdminPage() {
         <>
           <Row className="g-3 mb-3">
             <Col xs={6} lg={3}>
-              <StatCard label="Registered users" value={data.totalUsers} />
+              <StatTile icon="people" tone="brand" label="Registered users" value={data.totalUsers} />
             </Col>
             <Col xs={6} lg={3}>
-              <StatCard label="Expenses recorded" value={data.totalExpenses} />
+              <StatTile icon="receipt" tone="blue" label="Expenses recorded" value={data.totalExpenses} />
             </Col>
             <Col xs={6} lg={3}>
-              <StatCard label="Total value" value={formatMoney(data.totalExpenseValue)} />
+              <StatTile icon="cash-stack" tone="orange" label="Total value" value={formatMoney(data.totalExpenseValue)} />
             </Col>
             <Col xs={6} lg={3}>
-              <StatCard label="Expenses this month" value={data.expensesThisMonth} />
+              <StatTile icon="calendar-check" tone="violet" label="Expenses this month" value={data.expensesThisMonth} />
             </Col>
           </Row>
 
           <Row className="g-3 mb-3">
-            <Col lg={5}>
-              <CategoryManager categories={categories} onChanged={handleCategoriesChanged} />
-            </Col>
             <Col lg={7}>
               <Card className="h-100">
                 <Card.Body>
-                  <Card.Title className="h6 mb-3">Total spending per category</Card.Title>
-                  <CategoryBreakdown items={data.spendingPerCategory.filter((c) => c.total > 0)} />
+                  <h2 className="section-title">Total spending per category</h2>
+                  <p className="text-muted small mb-3">All users combined.</p>
+                  <CategoryBreakdown items={data.spendingPerCategory} maxRows={8} />
                 </Card.Body>
               </Card>
+            </Col>
+            <Col lg={5}>
+              <CategoryManager categories={categories} onChanged={handleCategoriesChanged} />
             </Col>
           </Row>
 
           <Row className="g-3 mb-3">
             <Col md={6}>
-              <UsageList title="Top 5 most-used categories" items={data.topCategories} />
+              <UsageList title="Most-used categories" subtitle="Top 5 by number of expenses" items={data.topCategories} />
             </Col>
             <Col md={6}>
-              <UsageList title="Bottom 5 least-used categories" items={data.bottomCategories} />
+              <UsageList title="Least-used categories" subtitle="Bottom 5 by number of expenses" items={data.bottomCategories} />
             </Col>
           </Row>
 
@@ -96,33 +102,22 @@ export default function AdminPage() {
             <Col lg={7}>
               <Card className="h-100">
                 <Card.Body>
-                  <Card.Title className="h6 mb-2">Recently added expenses</Card.Title>
+                  <h2 className="section-title mb-2">Recently added expenses</h2>
                   {data.recentExpenses.length ? (
-                    <Table size="sm" responsive className="mb-0 align-middle">
-                      <thead>
-                        <tr>
-                          <th>Title</th>
-                          <th className="d-none d-sm-table-cell">User</th>
-                          <th className="d-none d-md-table-cell">Category</th>
-                          <th className="text-end">Amount</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {data.recentExpenses.map((e) => (
-                          <tr key={e.id}>
-                            <td>
-                              {e.title}
-                              <div className="small text-muted">{formatDate(e.date)}</div>
-                            </td>
-                            <td className="d-none d-sm-table-cell">{e.userName}</td>
-                            <td className="d-none d-md-table-cell">{e.categoryName}</td>
-                            <td className="text-end text-nowrap">{formatMoney(e.amount)}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </Table>
+                    data.recentExpenses.map((e) => (
+                      <div key={e.id} className="tx-item">
+                        <CategoryAvatar name={e.categoryName} />
+                        <div className="tx-body">
+                          <div className="tx-title">{e.title}</div>
+                          <div className="tx-meta">
+                            {e.userName} · {e.categoryName} · {formatDate(e.date)}
+                          </div>
+                        </div>
+                        <div className="tx-amount">{formatMoney(e.amount)}</div>
+                      </div>
+                    ))
                   ) : (
-                    <p className="text-muted mb-0">No expenses recorded yet.</p>
+                    <p className="text-muted small mb-0">No expenses recorded yet.</p>
                   )}
                 </Card.Body>
               </Card>
@@ -130,25 +125,31 @@ export default function AdminPage() {
             <Col lg={5}>
               <Card className="h-100">
                 <Card.Body>
-                  <Card.Title className="h6 mb-2">Recently registered users</Card.Title>
-                  <Table size="sm" responsive className="mb-0 align-middle">
-                    <tbody>
-                      {data.recentUsers.map((u) => (
-                        <tr key={u.id}>
-                          <td>
-                            {u.name}{' '}
-                            {u.role === 'admin' && (
-                              <Badge bg="dark" className="ms-1">
-                                admin
-                              </Badge>
-                            )}
-                            <div className="small text-muted text-break">{u.email}</div>
-                          </td>
-                          <td className="text-end small text-muted text-nowrap">{formatDate(u.createdAt)}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </Table>
+                  <h2 className="section-title mb-2">Recently registered users</h2>
+                  {data.recentUsers.map((u) => (
+                    <div key={u.id} className="tx-item">
+                      <div className="avatar">
+                        {u.name
+                          .split(' ')
+                          .map((p) => p[0])
+                          .join('')
+                          .slice(0, 2)
+                          .toUpperCase()}
+                      </div>
+                      <div className="tx-body">
+                        <div className="tx-title">
+                          {u.name}
+                          {u.role === 'admin' && (
+                            <Badge bg="secondary" className="ms-2 fw-semibold">
+                              admin
+                            </Badge>
+                          )}
+                        </div>
+                        <div className="tx-meta">{u.email}</div>
+                      </div>
+                      <div className="small text-muted text-nowrap">{formatDate(u.createdAt)}</div>
+                    </div>
+                  ))}
                 </Card.Body>
               </Card>
             </Col>
