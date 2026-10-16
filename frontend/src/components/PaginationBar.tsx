@@ -17,19 +17,19 @@ export default function PaginationBar({ pagination, onChange }: Props) {
   const to = Math.min(page * limit, total);
 
   return (
-    <div className="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2 mt-3">
+    <div className="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2 mt-3 pt-3 border-top">
       <span className="small text-muted">
         Showing {from}–{to} of {total}
       </span>
       {totalPages > 1 && (
         <BsPagination size="sm" className="mb-0">
-          <BsPagination.Prev disabled={page === 1} onClick={() => onChange(page - 1)} />
+          <BsPagination.Prev disabled={page === 1} onClick={() => onChange(page - 1)} aria-label="Previous page" />
           {pages.map((p) => (
             <BsPagination.Item key={p} active={p === page} onClick={() => onChange(p)}>
               {p}
             </BsPagination.Item>
           ))}
-          <BsPagination.Next disabled={page === totalPages} onClick={() => onChange(page + 1)} />
+          <BsPagination.Next disabled={page === totalPages} onClick={() => onChange(page + 1)} aria-label="Next page" />
         </BsPagination>
       )}
     </div>

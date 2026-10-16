@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { Button, Card, Col, Form, Row } from 'react-bootstrap';
+import { Badge, Button, Card, Col, Form, Row } from 'react-bootstrap';
 import { useAppDispatch, useAppSelector } from '../../store';
 import {
-  hasActiveFilters,
   resetFilters,
   setAmountRange,
   setCategory,
@@ -46,13 +45,22 @@ const SORT_OPTIONS: { value: string; label: string }[] = [
   { value: 'amount-asc', label: 'Lowest amount' },
 ];
 
+// Number of filters in use (search is visible, so it isn't counted).
+const countActive = (f: FiltersState) =>
+  [f.categoryId, f.paymentMethod, f.startDate || f.endDate, f.minAmount || f.maxAmount].filter(Boolean).length;
+
 export default function ExpenseFilters({ categories }: { categories: Category[] }) {
   const filters = useAppSelector((state) => state.filters);
   const dispatch = useAppDispatch();
+  // Start open if filters are already applied (e.g. coming back to this page).
+  const [open, setOpen] = useState(() => countActive(filters) > 0);
 
   const [search, setSearchText] = useDebouncedField(filters.search, (v) => dispatch(setSearch(v)));
   const [minAmount, setMin] = useDebouncedField(filters.minAmount, (v) => dispatch(setAmountRange({ minAmount: v })));
   const [maxAmount, setMax] = useDebouncedField(filters.maxAmount, (v) => dispatch(setAmountRange({ maxAmount: v })));
+
+  const active = countActive(filters);
+  const anything = active > 0 || Boolean(filters.search);
 
   const handleSort = (value: string) => {
     const [sortBy, order] = value.split('-') as [FiltersState['sortBy'], FiltersState['order']];
@@ -60,121 +68,160 @@ export default function ExpenseFilters({ categories }: { categories: Category[] 
   };
 
   return (
-    <Card className="mb-3">
+    <Card className="filter-bar mb-3">
       <Card.Body>
-        <Row className="g-2">
-          <Col xs={12} lg={4}>
+        <div className="d-flex gap-2">
+          <div className="search-input">
+            <i className="bi bi-search" aria-hidden />
             <Form.Control
               type="search"
-              placeholder="Search title or notes..."
+              placeholder="Search expenses..."
               aria-label="Search expenses"
               value={search}
               onChange={(e) => setSearchText(e.target.value)}
             />
-          </Col>
-          <Col xs={6} lg={3}>
-            <Form.Select
-              aria-label="Filter by category"
-              value={filters.categoryId ?? ''}
-              onChange={(e) => dispatch(setCategory(e.target.value ? Number(e.target.value) : null))}
-            >
-              <option value="">All categories</option>
-              {categories.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </Form.Select>
-          </Col>
-          <Col xs={6} lg={2}>
-            <Form.Select
-              aria-label="Filter by payment method"
-              value={filters.paymentMethod ?? ''}
-              onChange={(e) => dispatch(setPaymentMethod((e.target.value || null) as PaymentMethod | null))}
-            >
-              <option value="">All payments</option>
-              {PAYMENT_METHODS.map((m) => (
-                <option key={m} value={m}>
-                  {paymentLabels[m]}
-                </option>
-              ))}
-            </Form.Select>
-          </Col>
-          <Col xs={12} lg={3}>
-            <Form.Select
-              aria-label="Sort expenses"
-              value={`${filters.sortBy}-${filters.order}`}
-              onChange={(e) => handleSort(e.target.value)}
-            >
-              {SORT_OPTIONS.map((o) => (
-                <option key={o.value} value={o.value}>
-                  Sort: {o.label}
-                </option>
-              ))}
-            </Form.Select>
-          </Col>
+          </div>
+          <Form.Select
+            aria-label="Sort expenses"
+            className="d-none d-md-block"
+            style={{ maxWidth: 190 }}
+            value={`${filters.sortBy}-${filters.order}`}
+            onChange={(e) => handleSort(e.target.value)}
+          >
+            {SORT_OPTIONS.map((o) => (
+              <option key={o.value} value={o.value}>
+                {o.label}
+              </option>
+            ))}
+          </Form.Select>
+          <Button
+            variant="light"
+            className="btn-light-soft text-nowrap"
+            onClick={() => setOpen((v) => !v)}
+            aria-expanded={open}
+            aria-controls="more-filters"
+          >
+            <i className="bi bi-sliders me-md-1" aria-hidden />
+            <span className="d-none d-md-inline">Filters</span>
+            {active > 0 && (
+              <Badge bg="primary" pill className="ms-1">
+                {active}
+              </Badge>
+            )}
+          </Button>
+        </div>
 
-          <Col xs={6} md={3}>
-            <Form.Label className="small text-muted mb-1" htmlFor="filter-from">
-              From
-            </Form.Label>
-            <Form.Control
-              id="filter-from"
-              type="date"
-              value={filters.startDate}
-              max={filters.endDate || undefined}
-              onChange={(e) => dispatch(setDateRange({ startDate: e.target.value }))}
-            />
-          </Col>
-          <Col xs={6} md={3}>
-            <Form.Label className="small text-muted mb-1" htmlFor="filter-to">
-              To
-            </Form.Label>
-            <Form.Control
-              id="filter-to"
-              type="date"
-              value={filters.endDate}
-              min={filters.startDate || undefined}
-              onChange={(e) => dispatch(setDateRange({ endDate: e.target.value }))}
-            />
-          </Col>
-          <Col xs={6} md={2}>
-            <Form.Label className="small text-muted mb-1" htmlFor="filter-min">
-              Min amount
-            </Form.Label>
-            <Form.Control
-              id="filter-min"
-              type="number"
-              min={0}
-              placeholder="0"
-              value={minAmount}
-              onChange={(e) => setMin(e.target.value)}
-            />
-          </Col>
-          <Col xs={6} md={2}>
-            <Form.Label className="small text-muted mb-1" htmlFor="filter-max">
-              Max amount
-            </Form.Label>
-            <Form.Control
-              id="filter-max"
-              type="number"
-              min={0}
-              placeholder="Any"
-              value={maxAmount}
-              onChange={(e) => setMax(e.target.value)}
-            />
-          </Col>
-          <Col xs={12} md={2} className="d-flex align-items-end">
-            <Button
-              variant="outline-secondary"
-              className="w-100"
-              disabled={!hasActiveFilters(filters)}
-              onClick={() => dispatch(resetFilters())}
-            >
-              Clear filters
+        {open && (
+          <Row className="g-2 mt-1" id="more-filters">
+            <Col xs={12} className="d-md-none">
+              <Form.Label className="small text-muted mb-1" htmlFor="filter-sort">
+                Sort by
+              </Form.Label>
+              <Form.Select id="filter-sort" value={`${filters.sortBy}-${filters.order}`} onChange={(e) => handleSort(e.target.value)}>
+                {SORT_OPTIONS.map((o) => (
+                  <option key={o.value} value={o.value}>
+                    {o.label}
+                  </option>
+                ))}
+              </Form.Select>
+            </Col>
+            <Col xs={6} md={3}>
+              <Form.Label className="small text-muted mb-1" htmlFor="filter-category">
+                Category
+              </Form.Label>
+              <Form.Select
+                id="filter-category"
+                value={filters.categoryId ?? ''}
+                onChange={(e) => dispatch(setCategory(e.target.value ? Number(e.target.value) : null))}
+              >
+                <option value="">All</option>
+                {categories.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name}
+                  </option>
+                ))}
+              </Form.Select>
+            </Col>
+            <Col xs={6} md={3}>
+              <Form.Label className="small text-muted mb-1" htmlFor="filter-payment">
+                Paid with
+              </Form.Label>
+              <Form.Select
+                id="filter-payment"
+                value={filters.paymentMethod ?? ''}
+                onChange={(e) => dispatch(setPaymentMethod((e.target.value || null) as PaymentMethod | null))}
+              >
+                <option value="">All</option>
+                {PAYMENT_METHODS.map((m) => (
+                  <option key={m} value={m}>
+                    {paymentLabels[m]}
+                  </option>
+                ))}
+              </Form.Select>
+            </Col>
+            <Col xs={6} md={3}>
+              <Form.Label className="small text-muted mb-1" htmlFor="filter-from">
+                From date
+              </Form.Label>
+              <Form.Control
+                id="filter-from"
+                type="date"
+                value={filters.startDate}
+                max={filters.endDate || undefined}
+                onChange={(e) => dispatch(setDateRange({ startDate: e.target.value }))}
+              />
+            </Col>
+            <Col xs={6} md={3}>
+              <Form.Label className="small text-muted mb-1" htmlFor="filter-to">
+                To date
+              </Form.Label>
+              <Form.Control
+                id="filter-to"
+                type="date"
+                value={filters.endDate}
+                min={filters.startDate || undefined}
+                onChange={(e) => dispatch(setDateRange({ endDate: e.target.value }))}
+              />
+            </Col>
+            <Col xs={6} md={3}>
+              <Form.Label className="small text-muted mb-1" htmlFor="filter-min">
+                Min amount (₦)
+              </Form.Label>
+              <Form.Control
+                id="filter-min"
+                type="number"
+                inputMode="decimal"
+                min={0}
+                placeholder="0"
+                value={minAmount}
+                onChange={(e) => setMin(e.target.value)}
+              />
+            </Col>
+            <Col xs={6} md={3}>
+              <Form.Label className="small text-muted mb-1" htmlFor="filter-max">
+                Max amount (₦)
+              </Form.Label>
+              <Form.Control
+                id="filter-max"
+                type="number"
+                inputMode="decimal"
+                min={0}
+                placeholder="Any"
+                value={maxAmount}
+                onChange={(e) => setMax(e.target.value)}
+              />
+            </Col>
+          </Row>
+        )}
+
+        {anything && (
+          <div className="d-flex justify-content-end mt-2">
+            <Button variant="link" size="sm" className="px-0" onClick={() => dispatch(resetFilters())}>
+              <i className="bi bi-x-circle me-1" aria-hidden />
+              Clear all filters
             </Button>
-          </Col>
-        </Row>
+          </div>
+        )}
       </Card.Body>
     </Card>
   );

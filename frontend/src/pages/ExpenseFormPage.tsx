@@ -39,12 +39,15 @@ export default function ExpenseFormPage() {
 
   return (
     <div className="narrow-page">
-      <Link to={editId ? `/expenses/${editId}` : '/expenses'} className="small d-inline-block mb-3">
-        ← Back
+      <Link to={editId ? `/expenses/${editId}` : '/expenses'} className="small fw-semibold d-inline-block mb-3">
+        <i className="bi bi-arrow-left me-1" aria-hidden /> Back
       </Link>
       <Card>
         <Card.Body className="p-4">
-          <h1 className="h4 mb-4">{editId ? 'Edit expense' : 'New expense'}</h1>
+          <h1 className="h4 mb-1">{editId ? 'Edit expense' : 'Add an expense'}</h1>
+          <p className="text-muted small mb-4">
+            {editId ? 'Change anything and save.' : 'Record something you spent money on.'}
+          </p>
           {(error || categoryError) && <Alert variant="danger">{error || categoryError}</Alert>}
           {loading || loadingCategories ? (
             <Loader />

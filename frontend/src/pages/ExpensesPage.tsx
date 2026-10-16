@@ -5,15 +5,16 @@ import { expenseApi } from '../api';
 import { getErrorMessage } from '../api/client';
 import ConfirmModal from '../components/ConfirmModal';
 import ExpenseFilters from '../components/expenses/ExpenseFilters';
-import ExpenseTable from '../components/expenses/ExpenseTable';
+import ExpenseList from '../components/expenses/ExpenseList';
 import Loader from '../components/Loader';
 import PaginationBar from '../components/PaginationBar';
+import { EmptyState, PageHeader } from '../components/ui';
 import { useCategories } from '../hooks/useCategories';
 import { useAppDispatch, useAppSelector } from '../store';
 import { fetchExpenses } from '../store/expensesSlice';
-import { hasActiveFilters, setPage } from '../store/filtersSlice';
+import { hasActiveFilters, resetFilters, setPage } from '../store/filtersSlice';
 import type { Expense } from '../types';
-import { formatMoney } from '../utils/format';
+import { formatMoney, plural } from '../utils/format';
 
 export default function ExpensesPage() {
   const dispatch = useAppDispatch();
@@ -51,17 +52,20 @@ export default function ExpensesPage() {
 
   return (
     <>
-      <div className="page-header">
-        <div>
-          <h1 className="h3 mb-0">Expenses</h1>
-          <p className="text-muted mb-0">
-            {pagination.total} {filtered ? 'matching' : 'total'} · {formatMoney(totalAmount)}
-          </p>
-        </div>
-        <Link to="/expenses/new" className="btn btn-primary">
-          + Add expense
-        </Link>
-      </div>
+      <PageHeader
+        title="Expenses"
+        subtitle={
+          <>
+            {plural(pagination.total, filtered ? 'matching expense' : 'expense')} ·{' '}
+            <span className="fw-semibold text-body">{formatMoney(totalAmount)}</span> total
+          </>
+        }
+        actions={
+          <Link to="/expenses/new" className="btn btn-primary d-none d-lg-inline-block">
+            <i className="bi bi-plus-lg me-1" aria-hidden /> Add expense
+          </Link>
+        }
+      />
 
       <ExpenseFilters categories={categories} />
 
@@ -73,17 +77,30 @@ export default function ExpensesPage() {
             <Loader text="Loading expenses..." />
           ) : items.length ? (
             <div className={status === 'loading' ? 'opacity-50' : ''}>
-              <ExpenseTable expenses={items} onDelete={setToDelete} />
+              <ExpenseList expenses={items} onDelete={setToDelete} groupByDate={filters.sortBy === 'date'} />
             </div>
+          ) : filtered ? (
+            <EmptyState
+              icon="search"
+              title="Nothing matches these filters"
+              text="Try a different search or clear the filters."
+              action={
+                <button type="button" className="btn btn-light btn-light-soft btn-sm" onClick={() => dispatch(resetFilters())}>
+                  Clear filters
+                </button>
+              }
+            />
           ) : (
-            <div className="text-center text-muted py-5">
-              {filtered ? 'No expenses match these filters.' : "You haven't recorded any expenses yet."}
-              {!filtered && (
-                <div className="mt-2">
-                  <Link to="/expenses/new">Add your first expense</Link>
-                </div>
-              )}
-            </div>
+            <EmptyState
+              icon="receipt"
+              title="No expenses yet"
+              text="Every time you spend money, add it here to see where it goes."
+              action={
+                <Link to="/expenses/new" className="btn btn-primary btn-sm">
+                  Add your first expense
+                </Link>
+              }
+            />
           )}
           <PaginationBar pagination={pagination} onChange={(page) => dispatch(setPage(page))} />
         </Card.Body>
