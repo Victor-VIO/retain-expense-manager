@@ -8,7 +8,8 @@ interface Props {
   onDelete?: (expense: Expense) => void;
 }
 
-// Expense rows. Category and payment columns hide on small screens to keep it readable.
+// Expense rows. On small screens the category, payment and action columns hide;
+// tapping the title opens the detail page, which has Edit and Delete.
 export default function ExpenseTable({ expenses, onDelete }: Props) {
   const navigate = useNavigate();
 
@@ -21,7 +22,7 @@ export default function ExpenseTable({ expenses, onDelete }: Props) {
           <th className="d-none d-md-table-cell">Category</th>
           <th className="d-none d-lg-table-cell">Payment</th>
           <th className="text-end">Amount</th>
-          {onDelete && <th className="text-end">Actions</th>}
+          {onDelete && <th className="text-end d-none d-sm-table-cell">Actions</th>}
         </tr>
       </thead>
       <tbody>
@@ -42,7 +43,7 @@ export default function ExpenseTable({ expenses, onDelete }: Props) {
             <td className="d-none d-lg-table-cell small">{paymentLabels[expense.paymentMethod]}</td>
             <td className="text-end fw-semibold text-nowrap">{formatMoney(expense.amount)}</td>
             {onDelete && (
-              <td className="text-end text-nowrap">
+              <td className="text-end text-nowrap d-none d-sm-table-cell">
                 <Button size="sm" variant="link" onClick={() => navigate(`/expenses/${expense.id}/edit`)}>
                   Edit
                 </Button>

@@ -60,8 +60,8 @@ export default function DashboardPage() {
             </Col>
             <Col xs={6} lg={3}>
               <StatCard
-                label="Remaining budget"
-                value={remaining === null ? '—' : formatMoney(remaining)}
+                label={remaining !== null && remaining < 0 ? 'Over budget by' : 'Remaining budget'}
+                value={remaining === null ? '—' : formatMoney(Math.abs(remaining))}
                 hint={remaining === null ? 'No budget set' : `of ${formatMoney(data.budget.amount ?? 0)}`}
                 tone={remaining === null ? 'default' : remainingTone}
               />
