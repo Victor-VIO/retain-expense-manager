@@ -47,34 +47,42 @@ Budget status: **within** (< 80% used), **approaching** (80–100%), **over** (>
 ## Requirement checklist (cross-check before deploy)
 
 ### Frontend
-- [ ] Components: expense list, expense detail, expense form, budget info, filters
-- [ ] Expense fields: title, amount, category, date, payment method, optional notes
-- [ ] Create / view / update / delete own expenses
-- [ ] Set/update monthly budget; shows total spent, remaining, within/approaching/over
-- [ ] Search, category filter, payment method filter, date filter, amount filter
-- [ ] Sort by date or amount (asc/desc)
-- [ ] Pagination on the expense list
-- [ ] User dashboard: month total, remaining budget, highest expense, spending by category, recent expenses
-- [ ] Auth with React Context only: sign up, sign in, sign out, roles, protected routes
-- [ ] Filtering/search/sort state lives in Redux only
-- [ ] Admin dashboard only for admins, guarded through Context
-- [ ] Admin: create/update/delete categories (deleted category → Uncategorized)
-- [ ] Admin insights: total users, total expenses, total value, expenses this month, spend per category, top 5 / bottom 5 categories, recent expenses, recent users
-- [ ] TypeScript types for API data, props, Redux state, context – no `any`
-- [ ] Responsive layout (checked at phone width)
-- [ ] UI library used (React-Bootstrap)
-- [ ] Loading + error states, form validation
+- [x] Components: expense list, expense detail, expense form, budget info, filters
+- [x] Expense fields: title, amount, category, date, payment method, optional notes
+- [x] Create / view / update / delete own expenses
+- [x] Set/update monthly budget; shows total spent, remaining, within/approaching/over
+- [x] Search, category filter, payment method filter, date filter, amount filter
+- [x] Sort by date or amount (asc/desc)
+- [x] Pagination on the expense list
+- [x] User dashboard: month total, remaining budget, highest expense, spending by category, recent expenses
+- [x] Auth with React Context only: sign up, sign in, sign out, roles, protected routes
+- [x] Filtering/search/sort state lives in Redux only
+- [x] Admin dashboard only for admins, guarded through Context
+- [x] Admin: create/update/delete categories (deleted category → Uncategorized)
+- [x] Admin insights: total users, total expenses, total value, expenses this month, spend per category, top 5 / bottom 5 categories, recent expenses, recent users
+- [x] TypeScript types for API data, props, Redux state, context – no `any`
+- [x] Responsive layout (checked at phone width)
+- [x] UI library used (React-Bootstrap)
+- [x] Loading + error states, form validation
 
 ### Backend
-- [ ] RESTful Express API with CRUD
-- [ ] Database stores users, expenses, budgets, categories (Turso)
-- [ ] Endpoints: expenses, budgets, categories, filtering, dashboard, admin insights
-- [ ] Passwords hashed, JWT auth
-- [ ] Users can only read/change their own expenses and budgets
-- [ ] Admin-only endpoints return 403 for normal users
-- [ ] Validation + sensible status codes / error messages
+- [x] RESTful Express API with CRUD
+- [x] Database stores users, expenses, budgets, categories (Turso)
+- [x] Endpoints: expenses, budgets, categories, filtering, dashboard, admin insights
+- [x] Passwords hashed, JWT auth
+- [x] Users can only read/change their own expenses and budgets
+- [x] Admin-only endpoints return 403 for normal users
+- [x] Validation + sensible status codes / error messages
 
 ### Project
-- [ ] Incremental, descriptive git commits
-- [ ] README: live URL, setup, technologies, features, API info
+- [x] Incremental, descriptive git commits
+- [x] README: setup, technologies, features, API info
+- [ ] README: live URL (after deploy)
 - [ ] Deployed and publicly reachable (final step)
+
+## Test log
+
+- Backend: 51/51 scripted API checks pass – auth errors, ownership (user B gets 404 on user A's expense), admin 403s, every filter, sort, pagination, budget status thresholds, category delete → Uncategorized.
+- Browser (localhost): sign up, form validation, create/edit/delete expense, budget set (94% → "approaching"), dashboard figures, search, category/payment/amount filters, sort, page 2, clear filters, non-admin redirected from /admin, wrong password error, sign out, admin login, category add/rename/delete, all admin insight panels.
+- Phone width (390px): admin, expense form and dashboard – no horizontal scroll, navbar collapses.
+- `tsc -b` strict build and `vite build` pass; no console errors.
