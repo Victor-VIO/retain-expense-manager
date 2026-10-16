@@ -1,12 +1,11 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react';
 import { Alert, Button, Card, Form } from 'react-bootstrap';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { getErrorMessage } from '../api/client';
 import { useAuth } from '../context/AuthContext';
 
 export default function RegisterPage() {
   const { register } = useAuth();
-  const navigate = useNavigate();
 
   const [form, setForm] = useState({ name: '', email: '', password: '', confirm: '' });
   const [error, setError] = useState('');
@@ -23,8 +22,8 @@ export default function RegisterPage() {
 
     setSubmitting(true);
     try {
+      // GuestRoute redirects to the dashboard once the user is set.
       await register(form.name, form.email, form.password);
-      navigate('/budget', { replace: true, state: { welcome: true } });
     } catch (err) {
       setError(getErrorMessage(err));
       setSubmitting(false);

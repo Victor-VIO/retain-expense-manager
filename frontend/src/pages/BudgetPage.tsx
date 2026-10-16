@@ -1,6 +1,5 @@
 import { useCallback, useState, type FormEvent } from 'react';
 import { Alert, Badge, Button, Card, Col, Form, InputGroup, Row, Table } from 'react-bootstrap';
-import { useLocation } from 'react-router-dom';
 import { budgetApi } from '../api';
 import { getErrorMessage } from '../api/client';
 import BudgetCard from '../components/BudgetCard';
@@ -10,8 +9,6 @@ import type { BudgetSummary } from '../types';
 import { budgetStatusInfo, formatMoney, formatMonth, thisMonth } from '../utils/format';
 
 export default function BudgetPage() {
-  const location = useLocation();
-  const welcome = (location.state as { welcome?: boolean } | null)?.welcome;
   const [month, setMonth] = useState(thisMonth());
   const [amount, setAmount] = useState('');
   const [saving, setSaving] = useState(false);
@@ -56,10 +53,6 @@ export default function BudgetPage() {
           <p className="text-muted mb-0">Set a spending limit and see how close you are to it.</p>
         </div>
       </div>
-
-      {welcome && (
-        <Alert variant="info">Welcome to Retain! Start by setting a budget for this month.</Alert>
-      )}
 
       <Row className="g-3">
         <Col lg={5}>
@@ -107,7 +100,7 @@ export default function BudgetPage() {
           {history && history.length > 0 && (
             <Card className="mt-3">
               <Card.Body>
-                <Card.Title className="h6 mb-2">Past budgets</Card.Title>
+                <Card.Title className="h6 mb-2">Your budgets</Card.Title>
                 <Table size="sm" responsive className="mb-0 align-middle">
                   <thead>
                     <tr>

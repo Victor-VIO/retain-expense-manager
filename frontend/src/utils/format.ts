@@ -37,3 +37,6 @@ export const budgetStatusInfo: Record<BudgetStatus, { label: string; variant: st
   over: { label: 'Over budget', variant: 'danger' },
   no_budget: { label: 'No budget set', variant: 'secondary' },
 };
+
+// plural(1, 'expense') -> "1 expense", plural(3, 'expense') -> "3 expenses"
+export const plural = (count: number, word: string) => `${count} ${word}${count === 1 ? '' : 's'}`;

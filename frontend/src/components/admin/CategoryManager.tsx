@@ -4,6 +4,7 @@ import { categoryApi } from '../../api';
 import { getErrorMessage } from '../../api/client';
 import type { Category } from '../../types';
 import ConfirmModal from '../ConfirmModal';
+import { plural } from '../../utils/format';
 
 interface Props {
   categories: Category[];
@@ -60,7 +61,7 @@ export default function CategoryManager({ categories, onChanged }: Props) {
     if (!toDelete) return;
     await run(async () => {
       const result = await categoryApi.remove(toDelete.id);
-      return `Deleted "${toDelete.name}". ${result.movedExpenses} expense(s) moved to Uncategorized.`;
+      return `Deleted "${toDelete.name}". ${plural(result.movedExpenses, 'expense')} moved to Uncategorized.`;
     });
     setToDelete(null);
   };
@@ -115,7 +116,7 @@ export default function CategoryManager({ categories, onChanged }: Props) {
                 <div className="d-flex justify-content-between align-items-center gap-2">
                   <span>
                     {c.name}{' '}
-                    <span className="text-muted small">· {c.expenseCount ?? 0} expenses</span>
+                    <span className="text-muted small">· {plural(c.expenseCount ?? 0, 'expense')}</span>
                     {c.isDefault && (
                       <Badge bg="secondary" className="ms-2">
                         default
@@ -156,7 +157,7 @@ export default function CategoryManager({ categories, onChanged }: Props) {
         <p className="mb-0">
           <strong>{toDelete?.name}</strong> will be removed.
           {toDelete?.expenseCount
-            ? ` Its ${toDelete.expenseCount} expense(s) will be moved to "Uncategorized" so nothing is lost.`
+            ? ` Its ${plural(toDelete.expenseCount, 'expense')} will be moved to "Uncategorized" so nothing is lost.`
             : ' No expenses use it.'}
         </p>
       </ConfirmModal>

@@ -19,9 +19,11 @@ export default function ProtectedRoute({ role }: Props) {
   return <Outlet />;
 }
 
-// Login / register pages: send signed-in users to the dashboard.
+// Login / register pages: send signed-in users back where they were heading (or the dashboard).
 export function GuestRoute() {
   const { user, isLoading } = useAuth();
+  const location = useLocation();
+  const from = (location.state as { from?: string } | null)?.from ?? '/';
   if (isLoading) return <Loader />;
-  return user ? <Navigate to="/" replace /> : <Outlet />;
+  return user ? <Navigate to={from} replace /> : <Outlet />;
 }

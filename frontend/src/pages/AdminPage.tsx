@@ -8,7 +8,7 @@ import StatCard from '../components/StatCard';
 import { useApi } from '../hooks/useApi';
 import { useCategories } from '../hooks/useCategories';
 import type { CategoryTotal } from '../types';
-import { formatDate, formatMoney } from '../utils/format';
+import { formatDate, formatMoney, plural } from '../utils/format';
 
 function UsageList({ title, items }: { title: string; items: CategoryTotal[] }) {
   return (
@@ -20,7 +20,7 @@ function UsageList({ title, items }: { title: string; items: CategoryTotal[] }) 
             <li key={c.categoryId} className="mb-1">
               <div className="d-flex justify-content-between gap-2">
                 <span className="text-truncate">{c.name}</span>
-                <span className="text-muted small text-nowrap">{c.count} uses</span>
+                <span className="text-muted small text-nowrap">{plural(c.count, 'use')}</span>
               </div>
             </li>
           ))}

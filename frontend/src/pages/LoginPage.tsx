@@ -1,14 +1,11 @@
 import { useState, type FormEvent } from 'react';
 import { Alert, Button, Card, Form } from 'react-bootstrap';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { getErrorMessage } from '../api/client';
 import { useAuth } from '../context/AuthContext';
 
 export default function LoginPage() {
   const { login } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const from = (location.state as { from?: string } | null)?.from ?? '/';
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -20,8 +17,8 @@ export default function LoginPage() {
     setError('');
     setSubmitting(true);
     try {
+      // GuestRoute redirects once the user is set.
       await login(email, password);
-      navigate(from, { replace: true });
     } catch (err) {
       setError(getErrorMessage(err));
       setSubmitting(false);

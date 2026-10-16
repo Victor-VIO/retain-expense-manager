@@ -9,7 +9,7 @@ import Loader from '../components/Loader';
 import StatCard from '../components/StatCard';
 import { useAuth } from '../context/AuthContext';
 import { useApi } from '../hooks/useApi';
-import { formatMoney, formatMonth, thisMonth } from '../utils/format';
+import { formatMoney, formatMonth, plural, thisMonth } from '../utils/format';
 
 export default function DashboardPage() {
   const { user } = useAuth();
@@ -55,7 +55,7 @@ export default function DashboardPage() {
               <StatCard
                 label="Total spent"
                 value={formatMoney(data.totalSpent)}
-                hint={`${data.expenseCount} expense${data.expenseCount === 1 ? '' : 's'}`}
+                hint={plural(data.expenseCount, 'expense')}
               />
             </Col>
             <Col xs={6} lg={3}>
