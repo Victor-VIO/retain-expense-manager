@@ -1,8 +1,11 @@
 import type { BudgetStatus, PaymentMethod } from '../types';
 
 const currency = new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' });
+const currencyWhole = new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN', maximumFractionDigits: 0 });
 
-export const formatMoney = (value: number) => currency.format(value);
+// Whole amounts drop the ".00" (₦21,000); amounts with kobo keep it (₦1,250.50).
+export const formatMoney = (value: number) =>
+  Number.isInteger(Math.round(value * 100) / 100) ? currencyWhole.format(value) : currency.format(value);
 
 export const formatDate = (value: string) =>
   new Date(value.length === 10 ? `${value}T00:00:00` : value.replace(' ', 'T')).toLocaleDateString('en-GB', {
@@ -40,3 +43,15 @@ export const budgetStatusInfo: Record<BudgetStatus, { label: string; variant: st
 
 // plural(1, 'expense') -> "1 expense", plural(3, 'expense') -> "3 expenses"
 export const plural = (count: number, word: string) => `${count} ${word}${count === 1 ? '' : 's'}`;
+
+// Day counts for a YYYY-MM month, used for "days left" and daily averages.
+export function monthDays(month: string) {
+  const [y, m] = month.split('-').map(Number);
+  const total = new Date(y, m, 0).getDate();
+  const current = thisMonth();
+  const elapsed = month < current ? total : month > current ? 0 : new Date().getDate();
+  return { total, elapsed, left: total - elapsed + (month === current ? 1 : 0), isCurrent: month === current };
+}
+
+export const formatMoneyShort = (value: number) =>
+  new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN', notation: 'compact', maximumFractionDigits: 1 }).format(value);
