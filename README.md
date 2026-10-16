@@ -22,15 +22,22 @@ Retain is a web app for recording day-to-day expenses, setting a monthly budget 
 - Create, rename and delete categories. Deleting a category moves its expenses to the built-in **Uncategorized** category, so no expense is lost (Uncategorized itself can't be renamed or deleted)
 - Platform insights: registered users, expenses recorded, total value, expenses this month, spending per category, top 5 / bottom 5 categories by usage, recently added expenses and recently registered users
 
-**General**
-- Responsive layout (Bootstrap grid; tables drop secondary columns on small screens)
+**Design & usability**
+- Light and dark mode (follows your device setting, with a toggle; remembered per browser)
+- Desktop sidebar; on phones and tablets a slide-out menu plus a bottom bar with a big **+** button for adding expenses
+- Dashboard budget ring with "left to spend", days left, daily average and a **safe to spend per day** figure
+- Spending by category as a split bar with a labelled row per category (each category keeps one colour and icon everywhere; colours checked for colour-blind safety in both themes)
+- Expense form built for touch: amount first, tap-to-pick category and payment chips
+- Expense list grouped by day (Today / Yesterday / date) when sorted by date
+- Password show/hide and a strength meter on sign-up
+- Tested at 320px, 360px, 375px, 390px, tablet (768–800px) and desktop widths
 - Loading, empty and error states; form validation on both client and server
 
 ## Tech stack
 
 | Layer | Tools |
 |-------|-------|
-| Frontend | React 19, TypeScript, Vite, React Router, Redux Toolkit, React-Bootstrap |
+| Frontend | React 19, TypeScript, Vite, React Router, Redux Toolkit, React-Bootstrap, Bootstrap Icons |
 | Backend | Node.js, Express 5 |
 | Database | [Turso](https://turso.tech) (hosted libSQL / SQLite) via `@libsql/client` |
 | Auth | bcrypt password hashing, JSON Web Tokens |
@@ -38,6 +45,7 @@ Retain is a web app for recording day-to-day expenses, setting a monthly budget 
 ### How state is split
 
 - **Authentication → React Context.** `src/context/AuthContext.tsx` holds the signed-in user and exposes `login`, `register`, `logout` and `isAdmin`. `ProtectedRoute` uses it to guard pages, and `<ProtectedRoute role="admin" />` guards the admin dashboard.
+- **Light / dark theme → React Context** (`src/context/ThemeContext.tsx`), applied through Bootstrap's `data-bs-theme`.
 - **Expense search / filter / sort / pagination → Redux.** `src/store/filtersSlice.ts` owns every filter value; `src/store/expensesSlice.ts` has a `fetchExpenses` thunk that reads the filters from the store and calls the API. Changing a filter resets the page to 1.
 
 ## Project structure
@@ -54,8 +62,8 @@ retain-expense-manager/
 └── frontend/
     └── src/
         ├── api/         # fetch client + typed endpoint functions
-        ├── components/  # shared UI, expenses/, admin/
-        ├── context/     # AuthContext
+        ├── components/  # shared UI, layout/ (sidebar, bottom nav, auth layout), expenses/, admin/
+        ├── context/     # AuthContext, ThemeContext
         ├── hooks/       # useApi, useCategories
         ├── pages/       # one file per route
         ├── store/       # Redux store, filters + expenses slices

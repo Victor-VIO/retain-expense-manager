@@ -42,7 +42,8 @@ Budget status: **within** (< 80% used), **approaching** (80–100%), **over** (>
 13. [x] Connect backend to Turso, run schema + seed there
 14. [x] Full manual test in the browser (desktop + mobile width)
 15. [x] README: features, setup, tech, API reference, live URL placeholder
-16. [ ] **STOP – deployment** (Render + Vercel, with Victor)
+16. [x] UI/UX redesign: sidebar + mobile menu + bottom nav, dark mode, new auth screens, budget ring, category split bar, touch-friendly form
+17. [ ] **STOP – deployment** (Render + Vercel, with Victor)
 
 ## Requirement checklist (cross-check before deploy)
 
@@ -94,3 +95,12 @@ Budget status: **within** (< 80% used), **approaching** (80–100%), **over** (>
 - Phone width: found the actions column forcing sideways scroll in the expense table → hidden on phones (detail page has Edit/Delete). Navbar menu opens fine.
 - Production build (`vite build` + `vite preview`) works against the API.
 - Turso reset to clean seed: admin account + 9 categories, no expenses.
+
+### Redesign check (Turso, Chrome)
+
+- Light + dark on every page; theme toggle in sidebar, mobile top bar and auth screens; choice remembered.
+- Widths checked: 320, 360, 375, 390, 740–800 (tablet), 1536 desktop – no horizontal scroll anywhere.
+- Fixed during review: header controls stacking, status pill wrapping at 360px, category names cut off / broken mid-word in chips, mini-stats truncated on small phones, big amounts wrapping (whole amounts now drop ".00"), budget page empty space, mobile auth chip labels.
+- Re-tested flows: sign up (strength meter, mismatch message), add with chips, edit (chips pre-selected), delete from list + modal, filter panel with active count, sort by amount (date grouping off), search, clear all, budget quick amount + save, admin insights, add/rename/delete category, 404 page.
+- Palette validated with the dataviz validator: all checks pass light (#ffffff) and dark (#18201f); light-mode low-contrast slots always sit next to a text label.
+- Turso reset to admin + 9 categories afterwards.
