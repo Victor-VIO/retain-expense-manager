@@ -39,7 +39,7 @@ Budget status: **within** (< 80% used), **approaching** (80–100%), **over** (>
 10. [x] Expenses: list, filters bar, pagination, detail, create/edit form, delete
 11. [x] Budget page + user dashboard
 12. [x] Admin dashboard: category management + platform insights
-13. [ ] Connect backend to Turso, run schema + seed there (DB `retain` + token created; waiting on token in `backend/.env`)
+13. [x] Connect backend to Turso, run schema + seed there
 14. [x] Full manual test in the browser (desktop + mobile width)
 15. [x] README: features, setup, tech, API reference, live URL placeholder
 16. [ ] **STOP – deployment** (Render + Vercel, with Victor)
@@ -86,3 +86,11 @@ Budget status: **within** (< 80% used), **approaching** (80–100%), **over** (>
 - Browser (localhost): sign up, form validation, create/edit/delete expense, budget set (94% → "approaching"), dashboard figures, search, category/payment/amount filters, sort, page 2, clear filters, non-admin redirected from /admin, wrong password error, sign out, admin login, category add/rename/delete, all admin insight panels.
 - Phone width (390px): admin, expense form and dashboard – no horizontal scroll, navbar collapses.
 - `tsc -b` strict build and `vite build` pass; no console errors.
+
+### Re-test on Turso (live database)
+
+- 51/51 API checks pass against Turso; test data removed afterwards.
+- Browser, full pass on Turso: stale token from old secret → sent to login; sign-up errors (password mismatch, duplicate email); create, edit, delete (from detail page), deleted expense → "not found"; unknown URL → 404 page; budget within / approaching / over (red, "Over by"), switching month from the budget list; dashboard for October and September; search in notes, date range, payment filter, lowest-amount sort, page 2, clear filters; non-admin blocked from /admin; signed-out visit to /expenses → login → back to /expenses; filters cleared on sign-out; admin can't open another user's expense; admin insights totals match data; duplicate category name rejected; add, rename, delete category (2 expenses moved to Uncategorized).
+- Phone width: found the actions column forcing sideways scroll in the expense table → hidden on phones (detail page has Edit/Delete). Navbar menu opens fine.
+- Production build (`vite build` + `vite preview`) works against the API.
+- Turso reset to clean seed: admin account + 9 categories, no expenses.
