@@ -9,11 +9,12 @@ interface Props {
 
 // Wraps routes that need a signed-in user (and optionally the admin role).
 export default function ProtectedRoute({ role }: Props) {
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, signedOut } = useAuth();
   const location = useLocation();
 
   if (isLoading) return <Loader text="Checking your session..." />;
-  if (!user) return <Navigate to="/login" replace state={{ from: location.pathname }} />;
+  // Remember where they were heading – unless they just signed out themselves.
+  if (!user) return <Navigate to="/login" replace state={signedOut ? undefined : { from: location.pathname }} />;
   if (role && user.role !== role) return <Navigate to="/" replace state={{ denied: true }} />;
 
   return <Outlet />;
