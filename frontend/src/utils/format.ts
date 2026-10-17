@@ -1,11 +1,14 @@
 import type { BudgetStatus, PaymentMethod } from '../types';
 
-const currency = new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' });
-const currencyWhole = new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN', maximumFractionDigits: 0 });
+// Amounts are Rwandan francs (RWF), which have no cents: "RWF 21,000".
+export const CURRENCY = 'RWF';
+const whole = new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 });
+const compact = new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 });
 
-// Whole amounts drop the ".00" (₦21,000); amounts with kobo keep it (₦1,250.50).
-export const formatMoney = (value: number) =>
-  Number.isInteger(Math.round(value * 100) / 100) ? currencyWhole.format(value) : currency.format(value);
+export const formatMoney = (value: number) => `${value < 0 ? '-' : ''}${CURRENCY} ${whole.format(Math.abs(value))}`;
+
+// Short form for tight spots: "RWF 150K", "RWF 1.2M"
+export const formatMoneyShort = (value: number) => `${CURRENCY} ${compact.format(value)}`;
 
 export const formatDate = (value: string) =>
   new Date(value.length === 10 ? `${value}T00:00:00` : value.replace(' ', 'T')).toLocaleDateString('en-GB', {
@@ -53,5 +56,3 @@ export function monthDays(month: string) {
   return { total, elapsed, left: total - elapsed + (month === current ? 1 : 0), isCurrent: month === current };
 }
 
-export const formatMoneyShort = (value: number) =>
-  new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN', notation: 'compact', maximumFractionDigits: 1 }).format(value);

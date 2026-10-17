@@ -64,7 +64,7 @@ export default function RegisterPage() {
           <Form.Label htmlFor="name">Full name</Form.Label>
           <div className="input-icon">
             <i className="bi bi-person" aria-hidden />
-            <Form.Control id="name" placeholder="e.g. Ada Okafor" value={form.name} onChange={update('name')} autoComplete="name" required />
+            <Form.Control id="name" placeholder="e.g. Aline Uwase" value={form.name} onChange={update('name')} autoComplete="name" required />
           </div>
         </Form.Group>
         <Form.Group className="mb-3">

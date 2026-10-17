@@ -23,7 +23,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
         </div>
 
         <div style={{ position: 'relative', zIndex: 1 }}>
-          <h2 className="mb-4">Know where every naira goes.</h2>
+          <h2 className="mb-4">Know where every franc goes.</h2>
           {FEATURES.map((f) => (
             <div className="auth-feature" key={f.title}>
               <span className="icon-chip">
@@ -44,13 +44,13 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
             <span>October budget</span>
             <span>62% used</span>
           </div>
-          <div className="fs-3 fw-bold mb-2">₦114,000 left</div>
+          <div className="fs-3 fw-bold mb-2">RWF 114,000 left</div>
           <div className="bar">
             <span />
           </div>
           <div className="small mt-2" style={{ opacity: 0.8 }}>
             <i className="bi bi-check-circle-fill me-1" />
-            On track · ₦8,140 safe to spend per day
+            On track · RWF 8,140 safe to spend per day
           </div>
         </div>
       </section>
@@ -66,7 +66,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
 
           {/* Phones / tablets: short version of the brand panel */}
           <div className="auth-mobile-hero d-lg-none">
-            <div className="fw-bold fs-5 mb-2">Know where every naira goes.</div>
+            <div className="fw-bold fs-5 mb-2">Know where every franc goes.</div>
             <div className="d-flex flex-wrap gap-2 small">
               {FEATURES.map((f) => (
                 <span key={f.title} className="d-inline-flex align-items-center gap-1">

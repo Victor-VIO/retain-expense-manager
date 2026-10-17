@@ -104,3 +104,16 @@ Budget status: **within** (< 80% used), **approaching** (80–100%), **over** (>
 - Re-tested flows: sign up (strength meter, mismatch message), add with chips, edit (chips pre-selected), delete from list + modal, filter panel with active count, sort by amount (date grouping off), search, clear all, budget quick amount + save, admin insights, add/rename/delete category, 404 page.
 - Palette validated with the dataviz validator: all checks pass light (#ffffff) and dark (#18201f); light-mode low-contrast slots always sit next to a text label.
 - Turso reset to admin + 9 categories afterwards.
+
+## Round 3 – polish & extras
+
+- [ ] Currency → Rwandan franc (RWF, no decimals) everywhere, incl. inputs, quick amounts, copy, README
+- [ ] New brand colour (indigo → violet) for light + dark, sidebar, buttons, charts that use the brand colour
+- [ ] Backend: dashboard returns daily spending + last month's total
+- [ ] Dashboard: daily spending chart with hover tooltips, "vs last month" change, budget warning banner
+- [ ] Toast messages after add / edit / delete / budget save
+- [ ] Export expenses (current filters) to CSV
+- [ ] Page titles per route, scroll to top on navigation
+- [ ] Gentle effects: page fade-in, card hover lift, skeleton loading
+- [ ] Full detail pass on every page – light + dark, phone + tablet + desktop, console errors
+- [ ] API test script re-run; Turso cleaned afterwards

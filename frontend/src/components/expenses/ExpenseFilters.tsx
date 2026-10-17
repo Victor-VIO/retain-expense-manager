@@ -185,7 +185,7 @@ export default function ExpenseFilters({ categories }: { categories: Category[] 
             </Col>
             <Col xs={6} md={3}>
               <Form.Label className="small text-muted mb-1" htmlFor="filter-min">
-                Min amount (₦)
+                Min amount (RWF)
               </Form.Label>
               <Form.Control
                 id="filter-min"
@@ -199,7 +199,7 @@ export default function ExpenseFilters({ categories }: { categories: Category[] 
             </Col>
             <Col xs={6} md={3}>
               <Form.Label className="small text-muted mb-1" htmlFor="filter-max">
-                Max amount (₦)
+                Max amount (RWF)
               </Form.Label>
               <Form.Control
                 id="filter-max"

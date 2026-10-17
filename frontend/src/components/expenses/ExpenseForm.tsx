@@ -28,6 +28,7 @@ type FieldErrors = Partial<Record<keyof FormValues, string>>;
 function validate(v: FormValues): FieldErrors {
   const errors: FieldErrors = {};
   if (!v.amount || Number(v.amount) <= 0) errors.amount = 'Enter how much you spent';
+  else if (!Number.isInteger(Number(v.amount))) errors.amount = 'Use whole francs – no decimals';
   if (!v.title.trim()) errors.title = 'Give the expense a short name';
   else if (v.title.length > 120) errors.title = 'Keep the name under 120 characters';
   if (!v.categoryId) errors.categoryId = 'Pick a category';
@@ -87,14 +88,14 @@ export default function ExpenseForm({ categories, initial, submitLabel, onSubmit
       <Form.Group className="mb-4" controlId="amount">
         <Form.Label>How much?</Form.Label>
         <div className={`amount-field ${errors.amount ? 'is-invalid' : ''}`}>
-          <span>₦</span>
+          <span>RWF</span>
           <input
             id="amount"
             type="number"
-            min="0.01"
-            step="0.01"
-            inputMode="decimal"
-            placeholder="0.00"
+            min="1"
+            step="1"
+            inputMode="numeric"
+            placeholder="0"
             value={values.amount}
             onChange={(e) => set('amount', e.target.value)}
             aria-invalid={!!errors.amount}
@@ -110,7 +111,7 @@ export default function ExpenseForm({ categories, initial, submitLabel, onSubmit
             <Form.Control
               value={values.title}
               onChange={(e) => set('title', e.target.value)}
-              placeholder="e.g. Groceries at Shoprite"
+              placeholder="e.g. Groceries at Simba Supermarket"
               isInvalid={!!errors.title}
             />
             <Form.Control.Feedback type="invalid">{errors.title}</Form.Control.Feedback>

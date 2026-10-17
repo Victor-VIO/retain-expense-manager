@@ -9,7 +9,7 @@ import { useApi } from '../hooks/useApi';
 import type { BudgetSummary } from '../types';
 import { formatMoney, formatMoneyShort, formatMonth, thisMonth } from '../utils/format';
 
-const QUICK_AMOUNTS = [50000, 100000, 200000, 500000];
+const QUICK_AMOUNTS = [100000, 250000, 500000, 1000000];
 
 const STATUS_COLOR = {
   within: 'var(--status-good)',
@@ -124,13 +124,13 @@ export default function BudgetPage() {
                 <Form.Group className="mb-2">
                   <Form.Label htmlFor="budget-amount">Budget amount</Form.Label>
                   <div className="amount-field">
-                    <span>₦</span>
+                    <span>RWF</span>
                     <input
                       id="budget-amount"
                       type="number"
                       min="1"
-                      step="0.01"
-                      inputMode="decimal"
+                      step="1"
+                      inputMode="numeric"
                       value={amount}
                       onChange={(e) => setAmount(e.target.value)}
                       placeholder="0"
