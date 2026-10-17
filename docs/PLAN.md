@@ -107,13 +107,22 @@ Budget status: **within** (< 80% used), **approaching** (80–100%), **over** (>
 
 ## Round 3 – polish & extras
 
-- [ ] Currency → Rwandan franc (RWF, no decimals) everywhere, incl. inputs, quick amounts, copy, README
-- [ ] New brand colour (indigo → violet) for light + dark, sidebar, buttons, charts that use the brand colour
-- [ ] Backend: dashboard returns daily spending + last month's total
-- [ ] Dashboard: daily spending chart with hover tooltips, "vs last month" change, budget warning banner
-- [ ] Toast messages after add / edit / delete / budget save
-- [ ] Export expenses (current filters) to CSV
-- [ ] Page titles per route, scroll to top on navigation
-- [ ] Gentle effects: page fade-in, card hover lift, skeleton loading
-- [ ] Full detail pass on every page – light + dark, phone + tablet + desktop, console errors
-- [ ] API test script re-run; Turso cleaned afterwards
+- [x] Currency → Rwandan franc (RWF, no decimals) everywhere, incl. inputs, quick amounts, copy, README
+- [x] New brand colour (indigo → violet) for light + dark, sidebar, buttons, charts that use the brand colour
+- [x] Backend: dashboard returns daily spending + last month's total
+- [x] Dashboard: daily spending chart with hover tooltips, "vs last month" change, budget warning banner
+- [x] Toast messages after add / edit / delete / budget save
+- [x] Export expenses (current filters) to CSV
+- [x] Page titles per route, scroll to top on navigation
+- [x] Gentle effects: page fade-in, card hover lift, skeleton loading
+- [x] Full detail pass on every page – light + dark, phone + tablet + desktop, console errors
+- [x] API test script re-run; Turso cleaned afterwards
+
+### Round 3 findings
+
+- Bug fixed: a failed session check (network blip / server error) deleted the saved login → users got signed out. Now only a 401 signs out, and the last user is cached so pages show instantly.
+- Bug fixed: after signing out, the next person to sign in was sent to the previous user's last page.
+- Dashboard re-balanced (recent expenses under the daily chart), CSV export moved into the filter bar on phones.
+- Decimal amounts rejected with a clear "whole francs" message; toasts confirmed for add, edit, delete, export, budget, sign in.
+- API: 53/53 checks pass (added daily spending + previous month checks). No console errors on any page.
+- Note: `npm run dev` loads slower than the deployed build (many unbundled files); the production build is a single 125 KB (gzip) script.

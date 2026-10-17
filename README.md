@@ -16,14 +16,19 @@ Retain is a web app for recording day-to-day expenses, setting a monthly budget 
 - Add, view, edit and delete expenses – title, amount, category, date, payment method and optional notes
 - Expense list with search, category / payment method / date range / amount range filters, sorting by date or amount, and pagination
 - Monthly budget: set or update a budget for any month and see total spent, what's left, and whether you're **within** (< 80%), **approaching** (80–100%) or **over** budget
-- Dashboard for any month: total spent, remaining budget, highest expense, spending by category and recent expenses
+- Dashboard for any month: total spent (with change vs last month), remaining budget, highest expense, spending by category, a day-by-day spending chart and recent expenses
+- A warning banner when you're close to (80%+) or over your budget, and a short "getting started" checklist for new accounts
+- Export the expenses you're looking at (with the current filters) to a CSV file that opens in Excel
+- Confirmation messages after adding, editing or deleting an expense and saving a budget
+- All amounts are in **Rwandan francs (RWF)**, shown without decimals
 
 **For admins**
 - Create, rename and delete categories. Deleting a category moves its expenses to the built-in **Uncategorized** category, so no expense is lost (Uncategorized itself can't be renamed or deleted)
 - Platform insights: registered users, expenses recorded, total value, expenses this month, spending per category, top 5 / bottom 5 categories by usage, recently added expenses and recently registered users
 
 **Design & usability**
-- Light and dark mode (follows your device setting, with a toggle; remembered per browser)
+- Light and dark mode (follows your device setting, with a toggle; remembered per browser), indigo–violet theme
+- Pages open instantly for returning users; a brief network or server hiccup doesn't sign you out
 - Desktop sidebar; on phones and tablets a slide-out menu plus a bottom bar with a big **+** button for adding expenses
 - Dashboard budget ring with "left to spend", days left, daily average and a **safe to spend per day** figure
 - Spending by category as a split bar with a labelled row per category (each category keeps one colour and icon everywhere; colours checked for colour-blind safety in both themes)
@@ -153,7 +158,7 @@ Another user's expense returns 404, so the API doesn't reveal that it exists.
 ### Dashboard & insights
 | Method | Endpoint | Access |
 |--------|----------|--------|
-| GET | `/dashboard?month=YYYY-MM` | Signed-in user – totals, budget, highest expense, spending by category, recent expenses |
+| GET | `/dashboard?month=YYYY-MM` | Signed-in user – totals, budget, highest expense, spending by category, recent expenses, `dailySpending` (per day) and `previousMonth` total |
 | GET | `/admin/insights` | Admin only – platform-wide numbers listed under Features |
 
 ## Deployment
