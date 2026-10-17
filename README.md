@@ -2,7 +2,7 @@
 
 Retain is a web app for recording day-to-day expenses, setting a monthly budget and seeing where the money actually goes. Admins can manage expense categories and see platform-wide numbers.
 
-**Live app:** https://retain-expense-manager.vercel.app
+**Live app:** https://retain-expense-manager-pi.vercel.app
 **API:** https://retain-api-m3mz.onrender.com/api (free Render plan – the first request after a quiet spell can take ~50s while it wakes up)
 
 > Demo admin (created by the seed script): `admin@retain.app` / `Admin123!`. Anyone can sign up as a normal user.
