@@ -5,9 +5,13 @@ import { getErrorMessage } from '../api/client';
 import AuthLayout from '../components/layout/AuthLayout';
 import PasswordInput from '../components/PasswordInput';
 import { useAuth } from '../context/AuthContext';
+import { usePageTitle } from '../hooks/usePageTitle';
+import { useToast } from '../context/ToastContext';
 
 export default function LoginPage() {
+  usePageTitle('Sign in');
   const { login } = useAuth();
+  const notify = useToast();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -19,7 +23,8 @@ export default function LoginPage() {
     setSubmitting(true);
     try {
       // GuestRoute redirects once the user is set.
-      await login(email, password);
+      const user = await login(email, password);
+      notify(`Welcome back, ${user.name.split(' ')[0]}!`, 'info');
     } catch (err) {
       setError(getErrorMessage(err));
       setSubmitting(false);

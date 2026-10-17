@@ -5,6 +5,8 @@ import { getErrorMessage } from '../api/client';
 import AuthLayout from '../components/layout/AuthLayout';
 import PasswordInput from '../components/PasswordInput';
 import { useAuth } from '../context/AuthContext';
+import { usePageTitle } from '../hooks/usePageTitle';
+import { useToast } from '../context/ToastContext';
 
 // 1 = weak, 2 = okay, 3 = strong (0 = nothing typed)
 function passwordStrength(pw: string) {
@@ -19,7 +21,9 @@ function passwordStrength(pw: string) {
 const STRENGTH_LABEL = ['', 'Too weak', 'Okay', 'Strong'];
 
 export default function RegisterPage() {
+  usePageTitle('Create account');
   const { register } = useAuth();
+  const notify = useToast();
   const [form, setForm] = useState({ name: '', email: '', password: '', confirm: '' });
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -40,7 +44,8 @@ export default function RegisterPage() {
     setSubmitting(true);
     try {
       // GuestRoute redirects to the dashboard once the user is set.
-      await register(form.name, form.email, form.password);
+      const user = await register(form.name, form.email, form.password);
+      notify(`Account created – welcome, ${user.name.split(' ')[0]}!`);
     } catch (err) {
       setError(getErrorMessage(err));
       setSubmitting(false);

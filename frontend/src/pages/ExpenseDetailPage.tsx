@@ -7,6 +7,8 @@ import ConfirmModal from '../components/ConfirmModal';
 import Loader from '../components/Loader';
 import { CategoryAvatar, EmptyState } from '../components/ui';
 import { useApi } from '../hooks/useApi';
+import { usePageTitle } from '../hooks/usePageTitle';
+import { useToast } from '../context/ToastContext';
 import { paymentIcons } from '../utils/categories';
 import { formatDate, formatMoney, paymentLabels } from '../utils/format';
 
@@ -27,6 +29,8 @@ export default function ExpenseDetailPage() {
   const navigate = useNavigate();
   const load = useCallback(() => expenseApi.get(id), [id]);
   const { data: expense, loading, error } = useApi(load);
+  usePageTitle(expense?.title ?? 'Expense');
+  const notify = useToast();
 
   const [confirming, setConfirming] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -36,6 +40,7 @@ export default function ExpenseDetailPage() {
     setDeleting(true);
     try {
       await expenseApi.remove(id);
+      notify(`"${expense?.title}" deleted`);
       navigate('/expenses', { replace: true });
     } catch (err) {
       setDeleteError(getErrorMessage(err));

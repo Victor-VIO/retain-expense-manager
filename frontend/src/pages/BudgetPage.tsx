@@ -6,6 +6,8 @@ import BudgetCard from '../components/BudgetCard';
 import Loader from '../components/Loader';
 import { PageHeader, StatusPill } from '../components/ui';
 import { useApi } from '../hooks/useApi';
+import { usePageTitle } from '../hooks/usePageTitle';
+import { useToast } from '../context/ToastContext';
 import type { BudgetSummary } from '../types';
 import { formatMoney, formatMoneyShort, formatMonth, thisMonth } from '../utils/format';
 
@@ -19,6 +21,8 @@ const STATUS_COLOR = {
 } as const;
 
 export default function BudgetPage() {
+  usePageTitle('Budget');
+  const notify = useToast();
   const [month, setMonth] = useState(thisMonth());
   const [amount, setAmount] = useState('');
   const [saving, setSaving] = useState(false);
@@ -47,7 +51,7 @@ export default function BudgetPage() {
       const saved = await budgetApi.save(month, Number(amount));
       setBudget(saved);
       reloadHistory();
-      setMessage({ type: 'success', text: `Budget for ${formatMonth(month)} saved.` });
+      notify(`Budget for ${formatMonth(month)} saved`);
     } catch (err) {
       setMessage({ type: 'danger', text: getErrorMessage(err) });
     } finally {

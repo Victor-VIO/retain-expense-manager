@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Badge, Button, Card, Col, Form, Row } from 'react-bootstrap';
 import { useAppDispatch, useAppSelector } from '../../store';
 import {
@@ -49,7 +49,7 @@ const SORT_OPTIONS: { value: string; label: string }[] = [
 const countActive = (f: FiltersState) =>
   [f.categoryId, f.paymentMethod, f.startDate || f.endDate, f.minAmount || f.maxAmount].filter(Boolean).length;
 
-export default function ExpenseFilters({ categories }: { categories: Category[] }) {
+export default function ExpenseFilters({ categories, extra }: { categories: Category[]; extra?: ReactNode }) {
   const filters = useAppSelector((state) => state.filters);
   const dispatch = useAppDispatch();
   // Start open if filters are already applied (e.g. coming back to this page).
@@ -109,6 +109,7 @@ export default function ExpenseFilters({ categories }: { categories: Category[] 
               </Badge>
             )}
           </Button>
+          {extra}
         </div>
 
         {open && (

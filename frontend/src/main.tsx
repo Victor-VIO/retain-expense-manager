@@ -8,19 +8,22 @@ import './index.css';
 import App from './App';
 import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { ToastProvider } from './context/ToastContext';
 import { store } from './store';
 
 // Redux sits outside AuthProvider so signing out can clear the expense state.
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ThemeProvider>
-      <Provider store={store}>
-        <BrowserRouter>
-          <AuthProvider>
-            <App />
-          </AuthProvider>
-        </BrowserRouter>
-      </Provider>
+      <ToastProvider>
+        <Provider store={store}>
+          <BrowserRouter>
+            <AuthProvider>
+              <App />
+            </AuthProvider>
+          </BrowserRouter>
+        </Provider>
+      </ToastProvider>
     </ThemeProvider>
   </StrictMode>,
 );

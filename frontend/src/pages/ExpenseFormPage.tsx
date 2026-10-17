@@ -6,6 +6,8 @@ import ExpenseForm from '../components/expenses/ExpenseForm';
 import Loader from '../components/Loader';
 import { useApi } from '../hooks/useApi';
 import { useCategories } from '../hooks/useCategories';
+import { usePageTitle } from '../hooks/usePageTitle';
+import { useToast } from '../context/ToastContext';
 import type { Expense, ExpenseInput } from '../types';
 
 // Handles both /expenses/new and /expenses/:id/edit.
@@ -13,6 +15,8 @@ export default function ExpenseFormPage() {
   const params = useParams();
   const editId = params.id ? Number(params.id) : null;
   const navigate = useNavigate();
+  usePageTitle(editId ? 'Edit expense' : 'Add expense');
+  const notify = useToast();
   const { categories, loading: loadingCategories, error: categoryError } = useCategories();
 
   const load = useCallback(
@@ -23,6 +27,7 @@ export default function ExpenseFormPage() {
 
   const handleSubmit = async (input: ExpenseInput) => {
     const saved = editId ? await expenseApi.update(editId, input) : await expenseApi.create(input);
+    notify(editId ? 'Changes saved' : `Added "${saved.title}"`);
     navigate(`/expenses/${saved.id}`, { replace: true });
   };
 

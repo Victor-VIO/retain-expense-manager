@@ -6,10 +6,13 @@ import { getErrorMessage } from '../api/client';
 import ConfirmModal from '../components/ConfirmModal';
 import ExpenseFilters from '../components/expenses/ExpenseFilters';
 import ExpenseList from '../components/expenses/ExpenseList';
-import Loader from '../components/Loader';
+import { ListSkeleton } from '../components/Skeleton';
 import PaginationBar from '../components/PaginationBar';
 import { EmptyState, PageHeader } from '../components/ui';
 import { useCategories } from '../hooks/useCategories';
+import { usePageTitle } from '../hooks/usePageTitle';
+import { useToast } from '../context/ToastContext';
+import { exportExpensesCsv } from '../utils/exportCsv';
 import { useAppDispatch, useAppSelector } from '../store';
 import { fetchExpenses } from '../store/expensesSlice';
 import { hasActiveFilters, resetFilters, setPage } from '../store/filtersSlice';
@@ -17,6 +20,9 @@ import type { Expense } from '../types';
 import { formatMoney, plural } from '../utils/format';
 
 export default function ExpensesPage() {
+  usePageTitle('Expenses');
+  const notify = useToast();
+  const [exporting, setExporting] = useState(false);
   const dispatch = useAppDispatch();
   const filters = useAppSelector((state) => state.filters);
   const { items, pagination, totalAmount, status, error } = useAppSelector((state) => state.expenses);
@@ -40,6 +46,7 @@ export default function ExpensesPage() {
       // Step back a page if we just removed the last row on this one.
       if (items.length === 1 && filters.page > 1) dispatch(setPage(filters.page - 1));
       else dispatch(fetchExpenses());
+      notify(`"${toDelete.title}" deleted`);
       setToDelete(null);
     } catch (err) {
       setDeleteError(getErrorMessage(err));
@@ -49,6 +56,18 @@ export default function ExpensesPage() {
   };
 
   const filtered = hasActiveFilters(filters);
+
+  const handleExport = async () => {
+    setExporting(true);
+    try {
+      const count = await exportExpensesCsv(filters);
+      notify(`Downloaded ${plural(count, 'expense')} as CSV`);
+    } catch (err) {
+      notify(getErrorMessage(err), 'error');
+    } finally {
+      setExporting(false);
+    }
+  };
 
   return (
     <>
@@ -67,14 +86,29 @@ export default function ExpensesPage() {
         }
       />
 
-      <ExpenseFilters categories={categories} />
+      <ExpenseFilters
+        categories={categories}
+        extra={
+          <button
+            type="button"
+            className="btn btn-light btn-light-soft text-nowrap"
+            onClick={handleExport}
+            disabled={exporting || pagination.total === 0}
+            title="Download the expenses shown as a CSV file (opens in Excel)"
+            aria-label="Export to CSV"
+          >
+            <i className={`bi bi-${exporting ? 'hourglass-split' : 'download'} me-md-1`} aria-hidden />
+            <span className="d-none d-md-inline">{exporting ? 'Exporting...' : 'Export'}</span>
+          </button>
+        }
+      />
 
       {error && <Alert variant="danger">{error}</Alert>}
 
       <Card>
         <Card.Body>
           {status === 'loading' && !items.length ? (
-            <Loader text="Loading expenses..." />
+            <ListSkeleton rows={6} />
           ) : items.length ? (
             <div className={status === 'loading' ? 'opacity-50' : ''}>
               <ExpenseList expenses={items} onDelete={setToDelete} groupByDate={filters.sortBy === 'date'} />

@@ -7,6 +7,7 @@ import Loader from '../components/Loader';
 import { CategoryAvatar, PageHeader, StatTile } from '../components/ui';
 import { useApi } from '../hooks/useApi';
 import { useCategories } from '../hooks/useCategories';
+import { usePageTitle } from '../hooks/usePageTitle';
 import type { CategoryTotal } from '../types';
 import { formatDate, formatMoney, plural } from '../utils/format';
 
@@ -41,6 +42,7 @@ function UsageList({ title, subtitle, items }: { title: string; subtitle: string
 }
 
 export default function AdminPage() {
+  usePageTitle('Admin');
   const { data, loading, error, reload } = useApi(adminApi.insights);
   const { categories, reload: reloadCategories } = useCategories();
 
