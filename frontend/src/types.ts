@@ -93,6 +93,8 @@ export interface DashboardData {
   highestExpense: Expense | null;
   spendingByCategory: CategoryTotal[];
   recentExpenses: Expense[];
+  dailySpending: { date: string; total: number }[];
+  previousMonth: { month: string; totalSpent: number };
 }
 
 export interface AdminInsights {
