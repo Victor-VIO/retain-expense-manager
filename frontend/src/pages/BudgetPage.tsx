@@ -1,12 +1,22 @@
 import { useCallback, useState, type FormEvent } from 'react';
-import { Alert, Badge, Button, Card, Col, Form, InputGroup, Row, Table } from 'react-bootstrap';
+import { Alert, Button, Card, Col, Form, Row } from 'react-bootstrap';
 import { budgetApi } from '../api';
 import { getErrorMessage } from '../api/client';
 import BudgetCard from '../components/BudgetCard';
 import Loader from '../components/Loader';
+import { PageHeader, StatusPill } from '../components/ui';
 import { useApi } from '../hooks/useApi';
 import type { BudgetSummary } from '../types';
-import { budgetStatusInfo, formatMoney, formatMonth, thisMonth } from '../utils/format';
+import { formatMoney, formatMoneyShort, formatMonth, thisMonth } from '../utils/format';
+
+const QUICK_AMOUNTS = [50000, 100000, 200000, 500000];
+
+const STATUS_COLOR = {
+  within: 'var(--status-good)',
+  approaching: 'var(--status-warning)',
+  over: 'var(--status-critical)',
+  no_budget: 'var(--status-none)',
+} as const;
 
 export default function BudgetPage() {
   const [month, setMonth] = useState(thisMonth());
@@ -47,19 +57,58 @@ export default function BudgetPage() {
 
   return (
     <>
-      <div className="page-header">
-        <div>
-          <h1 className="h3 mb-0">Monthly budget</h1>
-          <p className="text-muted mb-0">Set a spending limit and see how close you are to it.</p>
-        </div>
-      </div>
+      <PageHeader title="Monthly budget" subtitle="Decide how much you want to spend this month, then track it." />
 
       <Row className="g-3">
+        <Col lg={7}>
+          {error && <Alert variant="danger">{error}</Alert>}
+          {loading && !budget ? <Loader /> : budget && <BudgetCard budget={budget} fill={false} />}
+
+          {history && history.length > 0 && (
+            <Card className="mt-3">
+              <Card.Body>
+                <h2 className="section-title mb-1">Your budgets</h2>
+                <p className="text-muted small mb-2">Tap a month to view or change it.</p>
+                {history.map((b) => {
+                  const pct = Math.min(b.percentUsed ?? 0, 100);
+                  return (
+                    <button
+                      key={b.month}
+                      type="button"
+                      className={`legend-row w-100 border-0 text-start ${b.month === month ? 'hovered' : ''}`}
+                      style={{ background: b.month === month ? undefined : 'transparent', color: 'inherit' }}
+                      onClick={() => setMonth(b.month)}
+                    >
+                      <div className="flex-grow-1" style={{ minWidth: 0 }}>
+                        <div className="d-flex justify-content-between align-items-center gap-2 flex-wrap">
+                          <span className="name">{formatMonth(b.month)}</span>
+                          <StatusPill status={b.status} />
+                        </div>
+                        <div className="legend-track my-2">
+                          <span style={{ width: `${pct}%`, background: STATUS_COLOR[b.status] }} />
+                        </div>
+                        <div className="meta">
+                          {formatMoney(b.spent)} of {formatMoney(b.amount ?? 0)} · {b.percentUsed ?? 0}% used
+                        </div>
+                      </div>
+                    </button>
+                  );
+                })}
+              </Card.Body>
+            </Card>
+          )}
+        </Col>
+
         <Col lg={5}>
           <Card>
             <Card.Body>
-              <Card.Title className="h6 mb-3">{budget?.amount ? 'Update budget' : 'Set budget'}</Card.Title>
-              {message && <Alert variant={message.type}>{message.text}</Alert>}
+              <h2 className="section-title mb-3">{budget?.amount ? 'Update your budget' : 'Set your budget'}</h2>
+              {message && (
+                <Alert variant={message.type} className="d-flex align-items-center gap-2 py-2">
+                  <i className={`bi bi-${message.type === 'success' ? 'check-circle' : 'exclamation-circle'}`} aria-hidden />
+                  {message.text}
+                </Alert>
+              )}
               <Form onSubmit={handleSubmit}>
                 <Form.Group className="mb-3" controlId="budget-month">
                   <Form.Label>Month</Form.Label>
@@ -72,62 +121,58 @@ export default function BudgetPage() {
                     }}
                   />
                 </Form.Group>
-                <Form.Group className="mb-3" controlId="budget-amount">
-                  <Form.Label>Budget amount</Form.Label>
-                  <InputGroup>
-                    <InputGroup.Text>₦</InputGroup.Text>
-                    <Form.Control
+                <Form.Group className="mb-2">
+                  <Form.Label htmlFor="budget-amount">Budget amount</Form.Label>
+                  <div className="amount-field">
+                    <span>₦</span>
+                    <input
+                      id="budget-amount"
                       type="number"
                       min="1"
                       step="0.01"
+                      inputMode="decimal"
                       value={amount}
                       onChange={(e) => setAmount(e.target.value)}
-                      placeholder="e.g. 150000"
+                      placeholder="0"
                     />
-                  </InputGroup>
+                  </div>
                 </Form.Group>
+                <div className="d-flex flex-wrap gap-2 mb-4" aria-label="Quick amounts">
+                  {QUICK_AMOUNTS.map((q) => (
+                    <button
+                      key={q}
+                      type="button"
+                      className={`choice-chip py-1 px-3 ${Number(amount) === q ? 'selected' : ''}`}
+                      onClick={() => setAmount(String(q))}
+                    >
+                      {formatMoneyShort(q)}
+                    </button>
+                  ))}
+                </div>
                 <Button type="submit" className="w-100" disabled={saving || loading}>
                   {saving ? 'Saving...' : 'Save budget'}
                 </Button>
               </Form>
+
+              <div className="mt-4 pt-3 border-top">
+                <div className="small fw-bold mb-2">What the colours mean</div>
+                <ul className="list-unstyled small mb-0 d-grid gap-2">
+                  <li className="d-flex align-items-center gap-2">
+                    <StatusPill status="within" /> <span className="text-muted">under 80% used</span>
+                  </li>
+                  <li className="d-flex align-items-center gap-2">
+                    <StatusPill status="approaching" /> <span className="text-muted">80–100% used</span>
+                  </li>
+                  <li className="d-flex align-items-center gap-2">
+                    <StatusPill status="over" /> <span className="text-muted">spent more than the budget</span>
+                  </li>
+                </ul>
+              </div>
             </Card.Body>
           </Card>
         </Col>
-        <Col lg={7}>
-          {error && <Alert variant="danger">{error}</Alert>}
-          {loading && !budget ? <Loader /> : budget && <BudgetCard budget={budget} />}
-
-          {history && history.length > 0 && (
-            <Card className="mt-3">
-              <Card.Body>
-                <Card.Title className="h6 mb-2">Your budgets</Card.Title>
-                <Table size="sm" responsive className="mb-0 align-middle">
-                  <thead>
-                    <tr>
-                      <th>Month</th>
-                      <th className="text-end">Budget</th>
-                      <th className="text-end">Spent</th>
-                      <th className="text-end">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {history.map((b) => (
-                      <tr key={b.month} role="button" onClick={() => setMonth(b.month)}>
-                        <td>{formatMonth(b.month)}</td>
-                        <td className="text-end">{formatMoney(b.amount ?? 0)}</td>
-                        <td className="text-end">{formatMoney(b.spent)}</td>
-                        <td className="text-end">
-                          <Badge bg={budgetStatusInfo[b.status].variant}>{budgetStatusInfo[b.status].label}</Badge>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </Table>
-              </Card.Body>
-            </Card>
-          )}
-        </Col>
       </Row>
+
     </>
   );
 }

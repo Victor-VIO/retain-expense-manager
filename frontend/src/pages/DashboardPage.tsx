@@ -4,12 +4,17 @@ import { Link, useLocation } from 'react-router-dom';
 import { dashboardApi } from '../api';
 import BudgetCard from '../components/BudgetCard';
 import CategoryBreakdown from '../components/CategoryBreakdown';
-import ExpenseTable from '../components/expenses/ExpenseTable';
+import ExpenseList from '../components/expenses/ExpenseList';
 import Loader from '../components/Loader';
-import StatCard from '../components/StatCard';
+import { EmptyState, PageHeader, StatTile } from '../components/ui';
 import { useAuth } from '../context/AuthContext';
 import { useApi } from '../hooks/useApi';
-import { formatMoney, formatMonth, plural, thisMonth } from '../utils/format';
+import { formatMoney, formatMonth, monthDays, plural, thisMonth } from '../utils/format';
+
+function greeting() {
+  const h = new Date().getHours();
+  return h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+}
 
 export default function DashboardPage() {
   const { user } = useAuth();
@@ -19,77 +24,89 @@ export default function DashboardPage() {
 
   const load = useCallback(() => dashboardApi.get(month), [month]);
   const { data, loading, error } = useApi(load);
-
-  const remaining = data?.budget.remaining ?? null;
-  const remainingTone = data?.budget.status === 'over' ? 'danger' : data?.budget.status === 'approaching' ? 'warning' : 'success';
+  const days = monthDays(month);
 
   return (
     <>
-      <div className="page-header">
-        <div>
-          <h1 className="h3 mb-0">Hi, {user?.name.split(' ')[0]}</h1>
-          <p className="text-muted mb-0">Here's your spending for {formatMonth(month)}.</p>
-        </div>
-        <div className="d-flex gap-2">
-          <Form.Control
-            type="month"
-            aria-label="Choose month"
-            value={month}
-            max={thisMonth()}
-            onChange={(e) => e.target.value && setMonth(e.target.value)}
-          />
-          <Link to="/expenses/new" className="btn btn-primary text-nowrap">
-            + Add expense
-          </Link>
-        </div>
-      </div>
+      <PageHeader
+        title={`${greeting()}, ${user?.name.split(' ')[0]}`}
+        subtitle={`Here's how your money moved in ${formatMonth(month)}.`}
+        actions={
+          <>
+            <Form.Control
+              type="month"
+              aria-label="Choose month"
+              value={month}
+              max={thisMonth()}
+              onChange={(e) => e.target.value && setMonth(e.target.value)}
+              style={{ maxWidth: 190 }}
+            />
+            <Link to="/expenses/new" className="btn btn-primary text-nowrap d-none d-lg-inline-block">
+              <i className="bi bi-plus-lg me-1" aria-hidden /> Add expense
+            </Link>
+          </>
+        }
+      />
 
       {denied && <Alert variant="warning">That page is only available to admins.</Alert>}
       {error && <Alert variant="danger">{error}</Alert>}
       {loading && !data && <Loader />}
 
       {data && (
-        <>
+        <div className={loading ? 'opacity-50' : ''}>
           <Row className="g-3 mb-3">
-            <Col xs={6} lg={3}>
-              <StatCard
-                label="Total spent"
-                value={formatMoney(data.totalSpent)}
-                hint={plural(data.expenseCount, 'expense')}
-              />
+            <Col lg={7}>
+              <BudgetCard budget={data.budget} showLink />
             </Col>
-            <Col xs={6} lg={3}>
-              <StatCard
-                label={remaining !== null && remaining < 0 ? 'Over budget by' : 'Remaining budget'}
-                value={remaining === null ? '—' : formatMoney(Math.abs(remaining))}
-                hint={remaining === null ? 'No budget set' : `of ${formatMoney(data.budget.amount ?? 0)}`}
-                tone={remaining === null ? 'default' : remainingTone}
-              />
-            </Col>
-            <Col xs={6} lg={3}>
-              <StatCard
-                label="Highest expense"
-                value={data.highestExpense ? formatMoney(data.highestExpense.amount) : '—'}
-                hint={data.highestExpense?.title ?? 'Nothing yet'}
-              />
-            </Col>
-            <Col xs={6} lg={3}>
-              <StatCard
-                label="Top category"
-                value={<span className="fs-5">{data.spendingByCategory[0]?.name ?? '—'}</span>}
-                hint={data.spendingByCategory[0] ? formatMoney(data.spendingByCategory[0].total) : 'Nothing yet'}
-              />
+            <Col lg={5}>
+              <Row className="g-3 h-100">
+                <Col xs={6}>
+                  <StatTile
+                    icon="cash-coin"
+                    tone="brand"
+                    label="Total spent"
+                    value={formatMoney(data.totalSpent)}
+                    hint={plural(data.expenseCount, 'expense')}
+                  />
+                </Col>
+                <Col xs={6}>
+                  <StatTile
+                    icon="calendar3"
+                    tone="blue"
+                    label="Daily average"
+                    value={formatMoney(Math.round(days.elapsed ? data.totalSpent / days.elapsed : 0))}
+                    hint={days.isCurrent ? `over ${plural(days.elapsed, 'day')} so far` : `over ${days.total} days`}
+                  />
+                </Col>
+                <Col xs={6}>
+                  <StatTile
+                    icon="arrow-up-right-circle"
+                    tone="orange"
+                    label="Biggest expense"
+                    value={data.highestExpense ? formatMoney(data.highestExpense.amount) : '—'}
+                    hint={data.highestExpense?.title ?? 'Nothing yet'}
+                  />
+                </Col>
+                <Col xs={6}>
+                  <StatTile
+                    icon="trophy"
+                    tone="violet"
+                    label="Top category"
+                    value={<span className="fs-6 fw-bold">{data.spendingByCategory[0]?.name ?? '—'}</span>}
+                    hint={data.spendingByCategory[0] ? formatMoney(data.spendingByCategory[0].total) : 'Nothing yet'}
+                  />
+                </Col>
+              </Row>
             </Col>
           </Row>
 
           <Row className="g-3">
             <Col lg={5}>
-              <div className="mb-3">
-                <BudgetCard budget={data.budget} showLink />
-              </div>
-              <Card>
+              <Card className="h-100">
                 <Card.Body>
-                  <Card.Title className="h6 mb-3">Spending by category</Card.Title>
+                  <div className="card-header-row">
+                    <h2 className="section-title">Where your money went</h2>
+                  </div>
                   <CategoryBreakdown items={data.spendingByCategory} emptyText="No expenses this month yet." />
                 </Card.Body>
               </Card>
@@ -97,24 +114,31 @@ export default function DashboardPage() {
             <Col lg={7}>
               <Card className="h-100">
                 <Card.Body>
-                  <div className="d-flex justify-content-between align-items-center mb-2">
-                    <Card.Title className="h6 mb-0">Recent expenses</Card.Title>
-                    <Link to="/expenses" className="small">
-                      View all
+                  <div className="card-header-row">
+                    <h2 className="section-title">Recent expenses</h2>
+                    <Link to="/expenses" className="small fw-semibold">
+                      View all <i className="bi bi-arrow-right" aria-hidden />
                     </Link>
                   </div>
                   {data.recentExpenses.length ? (
-                    <ExpenseTable expenses={data.recentExpenses} />
+                    <ExpenseList expenses={data.recentExpenses} />
                   ) : (
-                    <p className="text-muted mb-0">
-                      No expenses yet. <Link to="/expenses/new">Add your first one</Link>.
-                    </p>
+                    <EmptyState
+                      icon="receipt"
+                      title="No expenses yet"
+                      text="Add your first expense and it will show up here."
+                      action={
+                        <Link to="/expenses/new" className="btn btn-primary btn-sm">
+                          Add expense
+                        </Link>
+                      }
+                    />
                   )}
                 </Card.Body>
               </Card>
             </Col>
           </Row>
-        </>
+        </div>
       )}
     </>
   );
