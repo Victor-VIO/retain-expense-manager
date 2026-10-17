@@ -14,7 +14,11 @@ router.get('/', async (req, res) => {
   const userId = req.user.id;
   const inMonth = 'e.user_id = ? AND substr(e.date, 1, 7) = ?';
 
-  const [budget, highest, byCategory, recent, count] = await Promise.all([
+  // Month before the selected one, for "vs last month".
+  const [y, m] = month.split('-').map(Number);
+  const prev = m === 1 ? `${y - 1}-12` : `${y}-${String(m - 1).padStart(2, '0')}`;
+
+  const [budget, highest, byCategory, recent, count, daily, prevTotal] = await Promise.all([
     getBudgetSummary(userId, month),
     db.execute({
       sql: `SELECT e.*, c.name AS category_name FROM expenses e JOIN categories c ON c.id = e.category_id
@@ -33,6 +37,14 @@ router.get('/', async (req, res) => {
       args: [userId],
     }),
     db.execute({ sql: `SELECT COUNT(*) AS n FROM expenses e WHERE ${inMonth}`, args: [userId, month] }),
+    db.execute({
+      sql: `SELECT e.date, SUM(e.amount) AS total FROM expenses e WHERE ${inMonth} GROUP BY e.date ORDER BY e.date`,
+      args: [userId, month],
+    }),
+    db.execute({
+      sql: `SELECT COALESCE(SUM(e.amount), 0) AS total FROM expenses e WHERE ${inMonth}`,
+      args: [userId, prev],
+    }),
   ]);
 
   res.json({
@@ -48,6 +60,9 @@ router.get('/', async (req, res) => {
       count: Number(r.count),
     })),
     recentExpenses: recent.rows.map(toExpense),
+    // Only days with spending are listed; the frontend fills the gaps with zero.
+    dailySpending: daily.rows.map((r) => ({ date: r.date, total: round2(r.total) })),
+    previousMonth: { month: prev, totalSpent: round2(prevTotal.rows[0].total) },
   });
 });
 
