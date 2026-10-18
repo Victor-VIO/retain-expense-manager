@@ -166,3 +166,17 @@ Another user's expense returns 404, so the API doesn't reveal that it exists.
 - **Database:** Turso (`retain` database)
 - **Backend:** Render web service – root `backend`, build `npm install`, start `npm start`, env vars from the table above (`CLIENT_URL` = the Vercel URL). Run `npm run db:setup` once against the Turso database.
 - **Frontend:** Vercel – root `frontend`, framework Vite, env `VITE_API_URL=https://<render-service>.onrender.com/api`. `vercel.json` rewrites all paths to `index.html` so refreshing a page like `/expenses/3` works.
+
+## Development process
+
+The project was built in small steps, each one its own commit, so the history can be read as a timeline. Roughly in order:
+
+1. **Planning.** Turned the brief into a requirement checklist and a build order: backend first, then the frontend on top of a working API.
+2. **Backend and database.** Express server, Turso (libSQL) schema with seed data and an admin account. Then JWT auth, expense CRUD with search, filters, sorting and pagination, monthly budgets, admin-managed categories (deleted ones fall back to "Uncategorized"), the user dashboard summary and the admin insights. Every endpoint was tested with a script of 53 checks, including users not being able to see each other's data.
+3. **Frontend foundations.** React + TypeScript with Vite. Auth, roles and protected routes in a React Context; expense search, filters, sorting and pagination in Redux, as the brief requires.
+4. **Pages.** Expense list, detail and form, the budget page, the user dashboard and the admin dashboard, all wired to the API.
+5. **Testing and fixes.** Went through every flow in the browser and fixed what came up, for example a redirect race after login and expense actions crowding small screens.
+6. **Redesign.** Sidebar with a mobile slide-out menu and bottom navigation, dark mode, new sign-in and sign-up pages, and touch-friendly lists, filters and forms. Checked on phone, tablet and desktop widths.
+7. **Local fit and extra features.** Switched the currency to Rwandan franc (RWF) and moved to an indigo-violet palette. Added a daily spending chart, a last-month comparison, budget alerts, toast messages and CSV export. Users now stay signed in through network errors.
+8. **Deployment.** Database on Turso, API on Render, frontend on Vercel. Re-ran the API checks against the live services.
+9. **Polish.** Smoother button hovers, an animated light/dark switch, and calendar and month pickers styled to match the app instead of the browser defaults.
