@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
-import { Alert, Card, Col, Form, Row } from 'react-bootstrap';
+import { Alert, Card, Col, Row } from 'react-bootstrap';
+import { MonthPicker } from '../components/DatePickers';
 import { Link, useLocation } from 'react-router-dom';
 import { dashboardApi } from '../api';
 import BudgetCard from '../components/BudgetCard';
@@ -118,14 +119,7 @@ export default function DashboardPage() {
         subtitle={`Here's how your money moved in ${formatMonth(month)}.`}
         actions={
           <>
-            <Form.Control
-              type="month"
-              aria-label="Choose month"
-              value={month}
-              max={thisMonth()}
-              onChange={(e) => e.target.value && setMonth(e.target.value)}
-              style={{ maxWidth: 190 }}
-            />
+            <MonthPicker id="dashboard-month" value={month} max={thisMonth()} onChange={setMonth} />
             <Link to="/expenses/new" className="btn btn-primary text-nowrap d-none d-lg-inline-block">
               <i className="bi bi-plus-lg me-1" aria-hidden /> Add expense
             </Link>

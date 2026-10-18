@@ -13,6 +13,7 @@ import {
 } from '../../store/filtersSlice';
 import { PAYMENT_METHODS, type Category, type PaymentMethod } from '../../types';
 import { paymentLabels } from '../../utils/format';
+import { DatePicker } from '../DatePickers';
 
 // Keeps a text box responsive while only updating Redux after the user pauses typing.
 function useDebouncedField(storeValue: string, commit: (value: string) => void, delay = 400) {
@@ -164,24 +165,26 @@ export default function ExpenseFilters({ categories, extra }: { categories: Cate
               <Form.Label className="small text-muted mb-1" htmlFor="filter-from">
                 From date
               </Form.Label>
-              <Form.Control
+              <DatePicker
                 id="filter-from"
-                type="date"
                 value={filters.startDate}
                 max={filters.endDate || undefined}
-                onChange={(e) => dispatch(setDateRange({ startDate: e.target.value }))}
+                placeholder="Any date"
+                clearable
+                onChange={(v) => dispatch(setDateRange({ startDate: v }))}
               />
             </Col>
             <Col xs={6} md={3}>
               <Form.Label className="small text-muted mb-1" htmlFor="filter-to">
                 To date
               </Form.Label>
-              <Form.Control
+              <DatePicker
                 id="filter-to"
-                type="date"
                 value={filters.endDate}
                 min={filters.startDate || undefined}
-                onChange={(e) => dispatch(setDateRange({ endDate: e.target.value }))}
+                placeholder="Any date"
+                clearable
+                onChange={(v) => dispatch(setDateRange({ endDate: v }))}
               />
             </Col>
             <Col xs={6} md={3}>

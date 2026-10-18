@@ -5,6 +5,7 @@ import { PAYMENT_METHODS, type Category, type ExpenseInput, type PaymentMethod }
 import { paymentIcons } from '../../utils/categories';
 import { paymentLabels, today } from '../../utils/format';
 import { CategoryAvatar } from '../ui';
+import { DatePicker } from '../DatePickers';
 
 interface Props {
   categories: Category[];
@@ -118,15 +119,9 @@ export default function ExpenseForm({ categories, initial, submitLabel, onSubmit
           </Form.Group>
         </Col>
         <Col xs={12} sm={5}>
-          <Form.Group controlId="date">
-            <Form.Label>Date</Form.Label>
-            <Form.Control
-              type="date"
-              value={values.date}
-              max={today()}
-              onChange={(e) => set('date', e.target.value)}
-              isInvalid={!!errors.date}
-            />
+          <Form.Group>
+            <Form.Label htmlFor="date">Date</Form.Label>
+            <DatePicker id="date" value={values.date} max={today()} onChange={(v) => set('date', v)} isInvalid={!!errors.date} />
             <Form.Control.Feedback type="invalid">{errors.date}</Form.Control.Feedback>
           </Form.Group>
         </Col>

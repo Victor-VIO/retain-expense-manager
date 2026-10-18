@@ -4,6 +4,7 @@ import { budgetApi } from '../api';
 import { getErrorMessage } from '../api/client';
 import BudgetCard from '../components/BudgetCard';
 import Loader from '../components/Loader';
+import { MonthPicker } from '../components/DatePickers';
 import { PageHeader, StatusPill } from '../components/ui';
 import { useApi } from '../hooks/useApi';
 import { usePageTitle } from '../hooks/usePageTitle';
@@ -114,13 +115,13 @@ export default function BudgetPage() {
                 </Alert>
               )}
               <Form onSubmit={handleSubmit}>
-                <Form.Group className="mb-3" controlId="budget-month">
-                  <Form.Label>Month</Form.Label>
-                  <Form.Control
-                    type="month"
+                <Form.Group className="mb-3">
+                  <Form.Label htmlFor="budget-month">Month</Form.Label>
+                  <MonthPicker
+                    id="budget-month"
                     value={month}
-                    onChange={(e) => {
-                      if (e.target.value) setMonth(e.target.value);
+                    onChange={(m) => {
+                      setMonth(m);
                       setMessage(null);
                     }}
                   />
