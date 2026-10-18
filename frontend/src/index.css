@@ -11,6 +11,8 @@
   --text-muted: #5d6178;
   --brand: #4f46e5;
   --brand-strong: #4338ca;
+  --btn-hover: #4338ca;
+  --btn-glow: rgba(79, 70, 229, 0.35);
   --brand-soft: #eef0ff;
   --brand-contrast: #ffffff;
   --brand-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
@@ -59,6 +61,8 @@
   --text-muted: #a0a4bf;
   --brand: #6366f1;
   --brand-strong: #a5b4fc;
+  --btn-hover: #5558f0;
+  --btn-glow: rgba(99, 102, 241, 0.45);
   --brand-soft: rgba(99, 102, 241, 0.18);
   --brand-contrast: #ffffff;
   --brand-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
@@ -115,14 +119,22 @@ a { text-decoration: none; }
   --bs-btn-bg: var(--brand);
   --bs-btn-border-color: var(--brand);
   --bs-btn-color: var(--brand-contrast);
-  --bs-btn-hover-bg: var(--brand-strong);
-  --bs-btn-hover-border-color: var(--brand-strong);
+  --bs-btn-hover-bg: var(--btn-hover);
+  --bs-btn-hover-border-color: var(--btn-hover);
   --bs-btn-hover-color: var(--brand-contrast);
-  --bs-btn-active-bg: var(--brand-strong);
-  --bs-btn-active-border-color: var(--brand-strong);
+  --bs-btn-active-bg: var(--btn-hover);
+  --bs-btn-active-border-color: var(--btn-hover);
+  --bs-btn-active-color: var(--brand-contrast);
   --bs-btn-disabled-bg: var(--brand);
   --bs-btn-disabled-border-color: var(--brand);
+  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
+/* Gentle lift and soft glow instead of a flat colour swap */
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px var(--btn-glow);
+}
+.btn-primary:active:not(:disabled) { transform: translateY(0) scale(0.98); box-shadow: 0 2px 6px var(--btn-glow); }
 .btn-light-soft {
   background: var(--surface-2);
   border: 1px solid var(--border);
