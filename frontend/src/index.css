@@ -979,3 +979,55 @@ form .month-picker { display: flex; width: 100%; }
 .month-cell.current:not(.selected) { box-shadow: inset 0 0 0 1.5px var(--brand); color: var(--brand-strong); }
 .month-cell.selected { background: var(--brand); color: #fff; box-shadow: 0 4px 12px var(--btn-glow); }
 .month-cell:disabled { opacity: 0.3; cursor: not-allowed; }
+
+/* ---------- Apple-style polish ---------- */
+/* One shared curve: fast start, soft landing (close to iOS sheet motion) */
+:root { --ease-out: cubic-bezier(0.32, 0.72, 0, 1); }
+
+/* Typography: tighter tracking and leading as text grows, body stays relaxed */
+body { line-height: 1.55; text-rendering: optimizeLegibility; }
+h1, h2, h3, .h1, .h2, .h3 { line-height: 1.2; }
+.page-header h1 { letter-spacing: -0.025em; line-height: 1.15; }
+.auth-brand h2 { letter-spacing: -0.03em; line-height: 1.1; }
+.stat-value, .hero-figure, .tx-amount, .legend-row .amount, .budget-ring-center .pct { font-variant-numeric: tabular-nums; }
+
+/* Response: no tap flash or 300ms delay, and feedback the instant something is pressed */
+a, button, .btn, [role='button'], .choice-chip, .tx-item, .legend-row { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+.btn:active:not(:disabled), .choice-chip:active, .icon-btn:active, .month-step:active:not(:disabled),
+.month-cell:active:not(:disabled), .picker-link:active, .sidebar-btn:active { transition-duration: 0.08s; }
+.tx-item, .legend-row, .sidebar-link, .getting-started .step, .bottom-nav a, .bottom-nav button {
+  transition: background-color 0.15s ease, color 0.15s ease, transform 0.25s var(--ease-out);
+}
+.tx-item:active, .legend-row:active, .getting-started .step:active { transform: scale(0.99); transition-duration: 0.08s; }
+.sidebar-link:active, .bottom-nav a:active, .bottom-nav button:active { transform: scale(0.96); transition-duration: 0.08s; }
+.stat-tile, .budget-hero { transition: transform 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out); }
+
+/* Materials: the mobile bottom bar becomes a translucent layer that content scrolls under */
+.bottom-nav {
+  background: color-mix(in srgb, var(--surface) 78%, transparent);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+}
+.mobile-topbar { -webkit-backdrop-filter: saturate(180%) blur(12px); }
+
+/* Pop-overs grow out of the button that opened them */
+.picker-popover .popover-body { transform-origin: top left; animation: picker-in 0.28s var(--ease-out); }
+@keyframes picker-in { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: none; } }
+
+/* Modals: settle in with a gentle scale instead of dropping from above; dimmed, softly blurred backdrop */
+.modal.fade .modal-dialog { transform: scale(0.96); transition: transform 0.3s var(--ease-out); }
+.modal.show .modal-dialog { transform: none; }
+.modal-backdrop.show { opacity: 1; background: rgba(15, 17, 35, 0.4); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+.modal-content { box-shadow: 0 24px 60px rgba(16, 24, 40, 0.25); }
+
+/* Page content eases in with the shared curve */
+.app-content > * { animation: fade-up 0.4s var(--ease-out) both; }
+
+/* Accessibility settings */
+@media (prefers-reduced-transparency: reduce) {
+  .bottom-nav, .mobile-topbar { background: var(--surface); backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .modal-backdrop.show { backdrop-filter: none; background: rgba(15, 17, 35, 0.55); }
+}
+@media (prefers-contrast: more) {
+  .card, .form-control, .picker-trigger, .choice-chip, .bottom-nav, .mobile-topbar { border-color: var(--text-muted) !important; }
+}
