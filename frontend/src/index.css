@@ -1021,7 +1021,6 @@ a, button, .btn, [role='button'], .choice-chip, .tx-item, .legend-row { -webkit-
 .modal-content { box-shadow: 0 24px 60px rgba(16, 24, 40, 0.25); }
 
 /* Page content eases in with the shared curve */
-.app-content > * { animation: fade-up 0.4s var(--ease-out) both; }
 
 /* Accessibility settings */
 @media (prefers-reduced-transparency: reduce) {
@@ -1030,4 +1029,62 @@ a, button, .btn, [role='button'], .choice-chip, .tx-item, .legend-row { -webkit-
 }
 @media (prefers-contrast: more) {
   .card, .form-control, .picker-trigger, .choice-chip, .bottom-nav, .mobile-topbar { border-color: var(--text-muted) !important; }
+}
+
+/* ---------- Apple-style polish, round two ---------- */
+/* Soft ambient colour behind everything, so glass surfaces have something to frost */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(900px 600px at -10% -10%, color-mix(in srgb, var(--brand) 14%, transparent), transparent 70%),
+    radial-gradient(700px 500px at 110% -10%, color-mix(in srgb, #8b5cf6 9%, transparent), transparent 70%);
+}
+
+/* Frosted sidebar: a translucent dark material with a bright edge catching the light */
+:root, [data-bs-theme='light'] { --sidebar-bg: linear-gradient(180deg, rgba(30, 27, 75, 0.86) 0%, rgba(42, 22, 96, 0.9) 100%); }
+[data-bs-theme='dark'] { --sidebar-bg: rgba(18, 19, 34, 0.72); }
+.sidebar-panel {
+  backdrop-filter: saturate(180%) blur(24px);
+  -webkit-backdrop-filter: saturate(180%) blur(24px);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.04);
+}
+.sidebar-link.active { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08); }
+
+/* Larger, Apple-style headings */
+.page-header { margin-bottom: 1.75rem; }
+.page-header h1 { font-size: clamp(1.75rem, 4.2vw, 2.4rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 0.3rem; }
+.page-header p, .page-header .text-muted { font-size: 1rem; }
+.section-title { font-size: 1.1rem; letter-spacing: -0.015em; }
+
+/* Rounder cards with soft, layered shadows */
+:root, [data-bs-theme='light'] {
+  --shadow-sm: 0 1px 2px rgba(20, 22, 50, 0.04), 0 4px 16px rgba(20, 22, 50, 0.05);
+  --shadow-md: 0 2px 6px rgba(20, 22, 50, 0.05), 0 16px 40px rgba(30, 27, 75, 0.1);
+}
+[data-bs-theme='dark'] {
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35), 0 6px 20px rgba(0, 0, 0, 0.25);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.4), 0 18px 44px rgba(0, 0, 0, 0.4);
+}
+.card { border-radius: 22px; }
+[data-bs-theme='light'] .card { --bs-card-border-color: rgba(20, 22, 50, 0.06); }
+.mini-stat, .legend-row, .choice-chip, .form-control, .form-select, .amount-field, .btn { border-radius: 12px; }
+.btn-sm { border-radius: 10px; }
+.modal-content { border-radius: 24px; }
+
+/* Page transitions: each page materialises – fades up while coming into focus */
+.page-enter { animation: page-in 0.45s var(--ease-out) both; }
+@keyframes page-in {
+  from { opacity: 0; transform: translateY(10px) scale(0.995); filter: blur(4px); }
+  to { opacity: 1; transform: none; filter: none; }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .sidebar-panel { backdrop-filter: none; -webkit-backdrop-filter: none; }
+  :root, [data-bs-theme='light'] { --sidebar-bg: linear-gradient(180deg, #1e1b4b 0%, #2a1660 100%); }
+  [data-bs-theme='dark'] { --sidebar-bg: #121322; }
 }

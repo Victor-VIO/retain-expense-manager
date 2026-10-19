@@ -160,7 +160,10 @@ export default function AppShell() {
 
       <main className="app-main">
         <div className="app-content">
-          <Outlet />
+          {/* Keyed by route so each page eases in when you navigate */}
+          <div key={pathname} className="page-enter">
+            <Outlet />
+          </div>
         </div>
       </main>
 
