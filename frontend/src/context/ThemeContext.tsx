@@ -1,11 +1,11 @@
-import { createContext, useCallback, useContext, useEffect, useRef, useState, type MouseEvent, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 import { flushSync } from 'react-dom';
 
 export type Theme = 'light' | 'dark';
 
 interface ThemeContextValue {
   theme: Theme;
-  toggleTheme: (e?: MouseEvent<HTMLElement>) => void;
+  toggleTheme: () => void;
 }
 
 const STORAGE_KEY = 'retain_theme';
@@ -23,7 +23,7 @@ function initialTheme(): Theme {
 
 function applyTheme(theme: Theme) {
   document.documentElement.setAttribute('data-bs-theme', theme);
-  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#0e0f1a' : '#1e1b4b');
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#000000' : '#f5f5f7');
 }
 
 // Light / dark mode. Bootstrap reads data-bs-theme on <html>; our own colours follow it too.
@@ -36,7 +36,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     applyTheme(theme);
   }, [theme]);
 
-  const toggleTheme = useCallback((e?: MouseEvent<HTMLElement>) => {
+  const toggleTheme = useCallback(() => {
     const next: Theme = themeRef.current === 'dark' ? 'light' : 'dark';
     try {
       localStorage.setItem(STORAGE_KEY, next);
@@ -51,21 +51,9 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     const root = document.documentElement;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return commit();
 
-    // Modern browsers: the new theme spreads out in a circle from the button.
+    // Modern browsers: the whole screen cross-fades to the new appearance, like macOS and iOS.
     if (typeof document.startViewTransition === 'function') {
-      const rect = e?.currentTarget.getBoundingClientRect();
-      const x = rect ? rect.left + rect.width / 2 : window.innerWidth / 2;
-      const y = rect ? rect.top + rect.height / 2 : 0;
-      const radius = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
-      const transition = document.startViewTransition(commit);
-      transition.ready
-        .then(() => {
-          root.animate(
-            { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
-            { duration: 600, easing: 'cubic-bezier(0.4, 0, 0.2, 1)', pseudoElement: '::view-transition-new(root)' },
-          );
-        })
-        .catch(() => {});
+      document.startViewTransition(commit).ready.catch(() => {});
       return;
     }
 

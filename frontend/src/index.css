@@ -3,24 +3,24 @@
 
 :root,
 [data-bs-theme='light'] {
-  --app-bg: #f5f6fb;
+  --app-bg: #f5f5f7;
   --surface: #ffffff;
-  --surface-2: #f7f8fc;
-  --border: #e5e7f0;
-  --text: #15172a;
-  --text-muted: #5d6178;
-  --brand: #4f46e5;
-  --brand-strong: #4338ca;
-  --btn-hover: #4338ca;
-  --btn-glow: rgba(79, 70, 229, 0.35);
-  --brand-soft: #eef0ff;
+  --surface-2: #f2f2f5;
+  --border: #e2e2e7;
+  --text: #1d1d1f;
+  --text-muted: #6e6e73;
+  --brand: #0071e3;
+  --brand-strong: #0066cc;
+  --btn-hover: #0077ed;
+  --btn-glow: rgba(0, 113, 227, 0.25);
+  --brand-soft: #e9f2fd;
   --brand-contrast: #ffffff;
-  --brand-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-  --sidebar-bg: linear-gradient(180deg, #1e1b4b 0%, #2a1660 100%);
-  --sidebar-text: rgba(255, 255, 255, 0.72);
-  --sidebar-active-bg: rgba(255, 255, 255, 0.12);
-  --shadow-sm: 0 1px 2px rgba(20, 22, 50, 0.05);
-  --shadow-md: 0 10px 30px rgba(30, 27, 75, 0.1);
+  --brand-gradient: linear-gradient(180deg, #2a8cff 0%, #0071e3 100%);
+  --sidebar-bg: rgba(242, 242, 246, 0.72);
+  --sidebar-text: #424245;
+  --sidebar-active-bg: rgba(0, 113, 227, 0.1);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.08);
 
   /* Chart categorical slots (validated palette, light surface) */
   --cat-1: #2a78d6;
@@ -32,12 +32,12 @@
   --cat-7: #6250d6;
   --cat-8: #e34948;
   --cat-other: #8b9693;
-  --track: #eceef6;
+  --track: #e8e8ed;
 
   /* Status (fixed, always paired with an icon + label) */
-  --status-good: #0ca30c;
-  --status-warning: #fab219;
-  --status-critical: #d03b3b;
+  --status-good: #34c759;
+  --status-warning: #ff9f0a;
+  --status-critical: #ff3b30;
   --status-none: #8b9693;
 
   --bs-body-bg: var(--app-bg);
@@ -45,32 +45,32 @@
   --bs-secondary-color: var(--text-muted);
   --bs-border-color: var(--border);
   --bs-primary: var(--brand);
-  --bs-primary-rgb: 79, 70, 229;
+  --bs-primary-rgb: 0, 113, 227;
   --bs-link-color: var(--brand);
-  --bs-link-color-rgb: 79, 70, 229;
+  --bs-link-color-rgb: 0, 113, 227;
   --bs-link-hover-color: var(--brand-strong);
-  --bs-body-font-family: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --bs-body-font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', system-ui, 'Segoe UI', Roboto, sans-serif;
 }
 
 [data-bs-theme='dark'] {
-  --app-bg: #0e0f1a;
-  --surface: #171827;
-  --surface-2: #1e2034;
-  --border: #2b2e48;
-  --text: #e9eaf6;
-  --text-muted: #a0a4bf;
-  --brand: #6366f1;
-  --brand-strong: #a5b4fc;
-  --btn-hover: #5558f0;
-  --btn-glow: rgba(99, 102, 241, 0.45);
-  --brand-soft: rgba(99, 102, 241, 0.18);
+  --app-bg: #000000;
+  --surface: #1c1c1e;
+  --surface-2: #2c2c2e;
+  --border: #38383a;
+  --text: #f5f5f7;
+  --text-muted: #98989d;
+  --brand: #0a84ff;
+  --brand-strong: #409cff;
+  --btn-hover: #2b95ff;
+  --btn-glow: rgba(10, 132, 255, 0.35);
+  --brand-soft: rgba(10, 132, 255, 0.18);
   --brand-contrast: #ffffff;
-  --brand-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-  --sidebar-bg: #121322;
-  --sidebar-text: rgba(233, 234, 246, 0.7);
-  --sidebar-active-bg: rgba(99, 102, 241, 0.18);
+  --brand-gradient: linear-gradient(180deg, #2b95ff 0%, #0a84ff 100%);
+  --sidebar-bg: rgba(28, 28, 30, 0.72);
+  --sidebar-text: rgba(245, 245, 247, 0.78);
+  --sidebar-active-bg: rgba(10, 132, 255, 0.2);
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.5);
 
   /* Same hues stepped for the dark surface (validated against #18201f) */
   --cat-1: #3987e5;
@@ -82,16 +82,18 @@
   --cat-7: #9085e9;
   --cat-8: #e66767;
   --cat-other: #7d8a87;
-  --track: #262941;
+  --track: #2c2c2e;
+  --status-good: #30d158;
+  --status-critical: #ff453a;
 
   --bs-body-bg: var(--app-bg);
   --bs-body-color: var(--text);
   --bs-secondary-color: var(--text-muted);
   --bs-border-color: var(--border);
-  --bs-primary-rgb: 99, 102, 241;
+  --bs-primary-rgb: 10, 132, 255;
   --bs-link-color: var(--brand-strong);
-  --bs-link-color-rgb: 165, 180, 252;
-  --bs-link-hover-color: #c7d2fe;
+  --bs-link-color-rgb: 64, 156, 255;
+  --bs-link-hover-color: #6cb4ff;
   --bs-tertiary-bg: var(--surface-2);
   --bs-secondary-bg: var(--surface-2);
 }
@@ -826,16 +828,15 @@ tr[role='button'] { cursor: pointer; }
 [data-bs-theme='dark'] .delta.up { color: #f07171; }
 
 /* ---------- Theme switch ---------- */
-/* Circle reveal (View Transitions) – the new theme grows out from the toggle button */
+/* Like macOS/iOS appearance changes: the whole screen softly cross-fades, no wipe or flash */
 ::view-transition-old(root),
-::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
-::view-transition-new(root) { z-index: 2; }
+::view-transition-new(root) { animation-duration: 0.5s; animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
 /* Fallback fade for browsers without View Transitions */
 .theme-fading,
 .theme-fading *,
 .theme-fading *::before,
 .theme-fading *::after {
-  transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, fill 0.4s ease, box-shadow 0.4s ease !important;
+  transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease, fill 0.5s ease, box-shadow 0.5s ease !important;
 }
 
 /* ---------- Date & month pickers ---------- */
@@ -1032,44 +1033,13 @@ a, button, .btn, [role='button'], .choice-chip, .tx-item, .legend-row { -webkit-
 }
 
 /* ---------- Apple-style polish, round two ---------- */
-/* Soft ambient colour behind everything, so glass surfaces have something to frost */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background:
-    radial-gradient(900px 600px at -10% -10%, color-mix(in srgb, var(--brand) 14%, transparent), transparent 70%),
-    radial-gradient(700px 500px at 110% -10%, color-mix(in srgb, #8b5cf6 9%, transparent), transparent 70%);
-}
-
-/* Frosted sidebar: a translucent dark material with a bright edge catching the light */
-:root, [data-bs-theme='light'] { --sidebar-bg: linear-gradient(180deg, rgba(30, 27, 75, 0.86) 0%, rgba(42, 22, 96, 0.9) 100%); }
-[data-bs-theme='dark'] { --sidebar-bg: rgba(18, 19, 34, 0.72); }
-.sidebar-panel {
-  backdrop-filter: saturate(180%) blur(24px);
-  -webkit-backdrop-filter: saturate(180%) blur(24px);
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.04);
-}
-.sidebar-link.active { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08); }
-
 /* Larger, Apple-style headings */
 .page-header { margin-bottom: 1.75rem; }
 .page-header h1 { font-size: clamp(1.75rem, 4.2vw, 2.4rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 0.3rem; }
 .page-header p, .page-header .text-muted { font-size: 1rem; }
 .section-title { font-size: 1.1rem; letter-spacing: -0.015em; }
 
-/* Rounder cards with soft, layered shadows */
-:root, [data-bs-theme='light'] {
-  --shadow-sm: 0 1px 2px rgba(20, 22, 50, 0.04), 0 4px 16px rgba(20, 22, 50, 0.05);
-  --shadow-md: 0 2px 6px rgba(20, 22, 50, 0.05), 0 16px 40px rgba(30, 27, 75, 0.1);
-}
-[data-bs-theme='dark'] {
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35), 0 6px 20px rgba(0, 0, 0, 0.25);
-  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.4), 0 18px 44px rgba(0, 0, 0, 0.4);
-}
+/* Rounder cards */
 .card { border-radius: 22px; }
 [data-bs-theme='light'] .card { --bs-card-border-color: rgba(20, 22, 50, 0.06); }
 .mini-stat, .legend-row, .choice-chip, .form-control, .form-select, .amount-field, .btn { border-radius: 12px; }
@@ -1085,6 +1055,69 @@ body::before {
 
 @media (prefers-reduced-transparency: reduce) {
   .sidebar-panel { backdrop-filter: none; -webkit-backdrop-filter: none; }
-  :root, [data-bs-theme='light'] { --sidebar-bg: linear-gradient(180deg, #1e1b4b 0%, #2a1660 100%); }
-  [data-bs-theme='dark'] { --sidebar-bg: #121322; }
+  :root, [data-bs-theme='light'] { --sidebar-bg: #f2f2f6; }
+  [data-bs-theme='dark'] { --sidebar-bg: #1c1c1e; }
 }
+
+/* ---------- Apple look: colour, type and materials ---------- */
+body { font-feature-settings: 'cv11', 'ss03'; letter-spacing: -0.006em; }
+h1, h2, h3, .h1, .h2, .h3 { font-weight: 700; }
+.page-header h1 { font-weight: 700; letter-spacing: -0.028em; }
+.hero-figure, .stat-value, .budget-ring-center .pct, .brand { font-weight: 700; }
+.auth-form h1, .auth-brand h2 { font-weight: 700; }
+::selection { background: color-mix(in srgb, var(--brand) 25%, transparent); }
+
+/* Buttons: Apple pill shape, a plain colour change on hover, a press on click */
+.btn { border-radius: 980px; font-weight: 500; padding: 0.55rem 1.15rem; }
+.btn-sm { border-radius: 980px; padding: 0.3rem 0.8rem; }
+.btn-primary:hover:not(:disabled) { transform: none; box-shadow: none; }
+.btn-primary:active:not(:disabled) { transform: scale(0.97); box-shadow: none; }
+.btn-light-soft { background: var(--surface); }
+.form-control:focus, .form-select:focus, .amount-field:focus-within, .picker-trigger.open {
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand) 22%, transparent);
+}
+
+/* Light frosted sidebar, like the macOS Finder/Mail sidebar */
+.sidebar-panel { color: var(--text); border-right: 1px solid var(--border); box-shadow: none; }
+.sidebar-section { color: var(--text-muted); opacity: 1; font-weight: 600; letter-spacing: 0.04em; }
+.sidebar-link { color: var(--sidebar-text); }
+.sidebar-link:hover { background: color-mix(in srgb, var(--text) 6%, transparent); color: var(--text); }
+.sidebar-link.active, [data-bs-theme='dark'] .sidebar-link.active { background: var(--sidebar-active-bg); color: var(--brand-strong); box-shadow: none; }
+.sidebar-link.active i { color: var(--brand); }
+.sidebar-user { background: color-mix(in srgb, var(--text) 4%, transparent); }
+.sidebar-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text); border-radius: 980px; }
+.sidebar-btn:hover { background: var(--surface-2); color: var(--text); }
+.brand-mark, .bottom-nav .fab { box-shadow: 0 4px 12px color-mix(in srgb, var(--brand) 30%, transparent); }
+
+/* Cards: hairline edge, soft shadow */
+[data-bs-theme='light'] .card { --bs-card-border-color: rgba(0, 0, 0, 0.05); }
+[data-bs-theme='dark'] .card { --bs-card-border-color: rgba(255, 255, 255, 0.06); box-shadow: none; }
+.stat-tile:hover { box-shadow: var(--shadow-md); }
+.choice-chip.selected { box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 18%, transparent); }
+
+/* Status text in Apple's accessible system colours */
+.status-within { color: #248a3d; }
+.status-approaching, .chip-warning { color: #c93400; }
+.status-over { color: #d70015; }
+.delta.down { color: #248a3d; }
+[data-bs-theme='dark'] .status-within, [data-bs-theme='dark'] .delta.down { color: #30d158; }
+[data-bs-theme='dark'] .status-over, [data-bs-theme='dark'] .delta.up { color: #ff6961; }
+[data-bs-theme='dark'] .status-approaching, [data-bs-theme='dark'] .chip-warning { color: #ffb340; }
+
+/* Sign-in side panel: Apple product-page black instead of a purple gradient */
+.auth-brand, .auth-mobile-hero {
+  background: radial-gradient(700px 420px at 15% 0%, rgba(10, 132, 255, 0.28), transparent 65%), linear-gradient(180deg, #1d1d1f 0%, #000 100%);
+}
+.auth-brand::after { background: radial-gradient(circle, rgba(10, 132, 255, 0.18), transparent 70%); }
+.auth-brand h2 { letter-spacing: -0.035em; }
+.auth-feature .icon-chip { background: rgba(255, 255, 255, 0.1); color: #fff; }
+.auth-preview { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.12); }
+.auth-preview .bar span { background: #0a84ff; }
+
+/* Toasts: frosted "HUD", like iOS notifications */
+.app-toast { border-radius: 16px; backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); }
+.app-toast.toast-success { background: rgba(36, 138, 61, 0.92); }
+.app-toast.toast-error { background: rgba(215, 0, 21, 0.92); }
+.app-toast.toast-info, [data-bs-theme='dark'] .app-toast.toast-info { background: rgba(29, 29, 31, 0.9); }
+
+.modal-backdrop.show { background: rgba(0, 0, 0, 0.32); }
