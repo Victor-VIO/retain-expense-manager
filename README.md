@@ -27,7 +27,12 @@ Retain is a web app for recording day-to-day expenses, setting a monthly budget 
 - Platform insights: registered users, expenses recorded, total value, expenses this month, spending per category, top 5 / bottom 5 categories by usage, recently added expenses and recently registered users
 
 **Design & usability**
-- Light and dark mode (follows your device setting, with a toggle; remembered per browser), indigo–violet theme
+- Apple-inspired look: soft neutral greys, Apple blue as the single accent, Apple's system font (Inter elsewhere), pill-shaped buttons, rounded cards with soft shadows and Apple's system colours for budget status
+- Light and dark mode (follows your device setting, with a toggle; remembered per browser). Dark mode uses a true-black background like iOS, and switching fades the whole screen across, as macOS and iOS do
+- Frosted, translucent sidebar, mobile top and bottom bars and notifications
+- Instant press feedback on buttons, rows and tabs; pages ease in when you navigate; pop-ups and calendars grow from the button that opened them
+- Custom date and month pickers that match the app, instead of the browser defaults
+- Respects the device's reduced motion, reduced transparency and increased contrast settings
 - Pages open instantly for returning users; a brief network or server hiccup doesn't sign you out
 - Desktop sidebar; on phones and tablets a slide-out menu plus a bottom bar with a big **+** button for adding expenses
 - Dashboard budget ring with "left to spend", days left, daily average and a **safe to spend per day** figure
@@ -177,6 +182,7 @@ The project was built in small steps, each one its own commit, so the history ca
 4. **Pages.** Expense list, detail and form, the budget page, the user dashboard and the admin dashboard, all wired to the API.
 5. **Testing and fixes.** Went through every flow in the browser and fixed what came up, for example a redirect race after login and expense actions crowding small screens.
 6. **Redesign.** Sidebar with a mobile slide-out menu and bottom navigation, dark mode, new sign-in and sign-up pages, and touch-friendly lists, filters and forms. Checked on phone, tablet and desktop widths.
-7. **Local fit and extra features.** Switched the currency to Rwandan franc (RWF) and moved to an indigo-violet palette. Added a daily spending chart, a last-month comparison, budget alerts, toast messages and CSV export. Users now stay signed in through network errors.
+7. **Local fit and extra features.** Switched the currency to Rwandan franc (RWF) and refreshed the colour palette. Added a daily spending chart, a last-month comparison, budget alerts, toast messages and CSV export. Users now stay signed in through network errors.
 8. **Deployment.** Database on Turso, API on Render, frontend on Vercel. Re-ran the API checks against the live services.
 9. **Polish.** Smoother button hovers, an animated light/dark switch, and calendar and month pickers styled to match the app instead of the browser defaults.
+10. **Apple-inspired redesign.** Reworked the interface using Apple's design principles: replaced the purple gradients with Apple's neutral greys and blue accent, switched to Apple's system font, made the sidebar and navigation bars frosted glass, and changed the buttons to pill shapes. Added instant press feedback and page transitions, and made the light/dark switch a soft cross-fade. Checked in both themes, and fixed a background effect that made the page slow to draw.
